@@ -12,6 +12,16 @@
         p { font-size: 1.2em; color: #6e6e73; line-height: 1.6; }
         .app-store-button { display: inline-block; margin-top: 30px; padding: 15px 30px; background-color: #007aff; color: white; font-size: 1em; font-weight: bold; border-radius: 12px; text-decoration: none; }
         footer { position: absolute; bottom: 20px; font-size: 0.9em; }
+        /* ▼▼▼ ЗМІНА: Стилі для посилань у футері ▼▼▼ */
+        footer a {
+            color: #6e6e73;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        /* ▲▲▲ КІНЕЦЬ ЗМІН ▲▲▲ */
     </style>
 </head>
 <body>
@@ -24,7 +34,9 @@
         <a href="#" class="app-store-button">Download on the App Store</a>
     </div>
     <footer>
-        <a href="privacy.html">Privacy Policy</a>
+        <!-- ▼▼▼ ЗМІНА: Додано посилання на Terms of Use ▼▼▼ -->
+        <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Use</a>
+        <!-- ▲▲▲ КІНЕЦЬ ЗМІН ▲▲▲ -->
     </footer>
 </body>
 </html>
