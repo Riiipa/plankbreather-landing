@@ -4,237 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plank Breather - A Mindful Plank Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --text-primary: #1d1d1f;
-            --text-secondary: #6e6e73;
-            --background-color: #ffffff;
-            --divider-color: #e8e8ed;
-            --section-background: #f5f5f7;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            background-color: var(--background-color);
-            color: var(--text-primary);
-            text-align: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-
-        .section {
-            padding: 80px 20px;
-            max-width: 900px;
-            margin: 0 auto;
+        .gradient-bg {
+            background: linear-gradient(180deg, #ffffff 0%, #f7f7f9 100%);
         }
-
-        /* Hero Section */
-        .hero {
-            padding-top: 100px;
-            padding-bottom: 80px;
+        .section-title {
+            font-size: 2.5rem; /* 40px */
+            font-weight: 700;
+            letter-spacing: -0.025em;
         }
-
-        .hero .icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 22.5%;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .hero h1 {
-            font-size: 3em;
-            font-weight: 300;
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .hero p {
-            font-size: 1.3em;
-            color: var(--text-secondary);
-            max-width: 550px;
-            margin: 20px auto 0;
-            line-height: 1.6;
-            font-weight: 300;
-        }
-        
-        .app-store-link {
-            display: inline-block;
-            margin-top: 40px;
-            transition: transform 0.2s;
-        }
-        .app-store-link:hover {
-            transform: scale(1.05);
-        }
-        .app-store-link img {
-            height: 50px;
-            width: auto;
-        }
-
-        /* ▼▼▼ НОВИЙ БЛОК: Features Section ▼▼▼ */
-        .features {
-            background-color: var(--section-background);
-            padding-top: 100px;
-            padding-bottom: 100px;
-        }
-        
-        .feature {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 100px;
-        }
-
-        .feature:last-child {
-            margin-bottom: 0;
-        }
-
-        .feature-text {
-            max-width: 500px;
-            margin-bottom: 40px;
-        }
-
-        .feature-text h2 {
-            font-size: 2.2em;
-            font-weight: 400;
-            margin-bottom: 15px;
-        }
-
-        .feature-text p {
-            font-size: 1.2em;
-            font-weight: 300;
-            color: var(--text-secondary);
+        .section-subtitle {
+            font-size: 1.25rem; /* 20px */
+            color: #6e6e73;
+            max-width: 600px;
+            margin: 1rem auto 0;
             line-height: 1.6;
         }
-
-        .screenshot-container {
-            max-width: 350px;
-            width: 100%;
-        }
-
-        .screenshot {
-            width: 100%;
-            height: auto;
-            filter: drop-shadow(0 20px 25px rgba(0,0,0,0.1));
-        }
-        /* ▲▲▲ КІНЕЦЬ НОВОГО БЛОКУ ▲▲▲ */
-
-        /* Philosophy Section */
-        .philosophy h2 {
-            font-size: 2.5em;
-            font-weight: 400;
-            margin-bottom: 15px;
-        }
-
-        .philosophy p {
-            font-size: 1.2em;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            max-width: 700px;
-            margin: 0 auto 40px;
-            font-weight: 300;
-        }
-
-        .journey {
-            font-family: "SF Mono", "Menlo", monospace;
-            font-size: 1.1em;
-            background-color: #e8e8ed;
-            padding: 20px 30px;
-            border-radius: 12px;
-            display: inline-block;
-        }
-
-        /* Footer */
-        footer {
-            padding: 40px 20px;
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--divider-color);
-            margin-top: 60px;
-        }
-
-        footer a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5em; }
-            .hero p { font-size: 1.2em; }
-            .philosophy h2, .feature-text h2 { font-size: 2em; }
-            .section { padding: 60px 20px; }
-            .hero { padding-top: 80px; padding-bottom: 60px; }
-            .screenshot-container { max-width: 300px; }
+            .section-title { font-size: 2rem; } /* 32px */
+            .section-subtitle { font-size: 1.125rem; } /* 18px */
         }
     </style>
 </head>
-<body>
+<body class="bg-white text-gray-800 antialiased">
 
-    <!-- Hero Section -->
-    <div class="section hero">
-        <img src="app-icon.png" alt="Plank Breather App Icon" class="icon">
-        <h1>Go Beyond the Clock.</h1>
-        <p>Plank Breather transforms a challenging exercise into a mindful practice where the measure is not seconds, but your calm, steady breath.</p>
-        <a href="#" class="app-store-link" aria-label="Download on the App Store">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1280px-Download_on_the_App_Store_Badge.svg.png" alt="Download on the App Store">
-        </a>
-    </div>
-
-    <!-- ▼▼▼ ЗМІНА: Старий блок скріншотів замінено на новий, більш детальний блок "Features" ▼▼▼ -->
-    <div class="features">
-        <div class="section">
-            <div class="feature">
-                <div class="feature-text">
-                    <h2>From a Chore to a Meditation</h2>
-                    <p>Stop watching the seconds crawl by. Our clean, focused interface helps you connect with your body. Tap to start, tap to stop when you're ready. It's that simple.</p>
-                </div>
-                <div class="screenshot-container">
-                    <img src="001.png" alt="Main screen of Plank Breather" class="screenshot">
-                </div>
+    <!-- Header -->
+    <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-10 border-b border-gray-200">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- TODO: Replace with your actual app icon -->
+                <img src="https://placehold.co/40x40/000000/FFFFFF?text=PB" alt="Plank Breather App Icon" class="w-10 h-10 rounded-lg">
+                <span class="font-bold text-xl">Plank Breather</span>
             </div>
-
-            <div class="feature">
-                <div class="feature-text">
-                    <h2>Build a Habit, Not Just a Streak</h2>
-                    <p>Our unique Breath Program is a stress-free way to build a powerful habit. The goal grows gently by just +1 calm exhale each day, making progress feel natural and effortless.</p>
-                </div>
-                <div class="screenshot-container">
-                    <img src="002.png" alt="Breath Program screen" class="screenshot">
-                </div>
-            </div>
-
-            <div class="feature">
-                <div class="feature-text">
-                    <h2>Visualize Your Consistency</h2>
-                    <p>Track your journey with a beautiful heatmap calendar and detailed charts. See your consistency and celebrate every small victory on your path to mastery.</p>
-                </div>
-                <div class="screenshot-container">
-                    <img src="images/screenshot3.png" alt="Statistics screen of Plank Breather" class="screenshot">
-                </div>
-            </div>
+            <!-- TODO: Replace # with your App Store link -->
+            <a href="#" class="hidden sm:inline-block bg-gray-800 text-white font-semibold px-5 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                Download
+            </a>
         </div>
-    </div>
-    <!-- ▲▲▲ КІНЕЦЬ ЗМІН ▲▲▲ -->
+    </header>
 
-    <!-- Philosophy Section -->
-    <div class="section philosophy">
-        <h2>Your Journey Has Two Paths</h2>
-        <p>Plank Breather guides you through a complete evolution. The first path teaches you to grow. The second teaches you to master.</p>
-        <div class="journey">
-            [ The Growth Path ] &nbsp;&nbsp;--->&nbsp;&nbsp; [ The Mastery Path ]
-        </div>
-        <p style="margin-top: 40px;">First, you build a powerful habit with our unique Breath Program. Then, when you're ready, you transition to Harmony Mode to perfect your practice and find a true state of flow.</p>
-    </div>
+    <main>
+        <!-- Hero Section -->
+        <section class="text-center py-20 md:py-32 px-6 gradient-bg">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-tight">
+                Focus on Breath, Not Time.
+            </h1>
+            <p class="section-subtitle">
+                Transform the plank from a painful countdown into a mindful practice. Discover the strength that comes from calm, steady breathing.
+            </p>
+            <!-- TODO: Replace # with your App Store link -->
+            <a href="#" class="inline-block mt-8 transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1280px-Download_on_the_App_Store_Badge.svg.png" alt="Download on the App Store" class="h-14">
+            </a>
+        </section>
+
+        <!-- Features Section -->
+        <section class="max-w-5xl mx-auto py-20 md:py-32 px-6">
+            <div class="space-y-20 md:space-y-28">
+                <!-- Feature 1 -->
+                <div class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">From a Chore to a Meditation.</h2>
+                        <p class="text-lg text-gray-600 mt-4 leading-relaxed">
+                            Stop watching the seconds crawl by. Our clean, focused interface and calming animation help you connect with your body. Tap to start, tap to stop when you're ready. It’s that simple.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2">
+                         <!-- TODO: Replace with your feature 1 screenshot -->
+                        <img src="001.png" alt="App interface showing the breathing animation" class="rounded-2xl shadow-xl w-3/4 mx-auto">
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="flex flex-col md:flex-row-reverse items-center gap-12 md:gap-16">
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Build a Habit, Not Just a Streak.</h2>
+                        <p class="text-lg text-gray-600 mt-4 leading-relaxed">
+                            Our unique Breath Program is a stress-free way to build a powerful habit. Your goal grows gently by just **+1 calm exhale** each day, making progress feel natural and effortless.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2">
+                        <!-- TODO: Replace with your feature 2 screenshot -->
+                        <img src="004.png" alt="Breath Program screen" class="rounded-2xl shadow-xl w-3/4 mx-auto">
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Visualize Your Consistency.</h2>
+                        <p class="text-lg text-gray-600 mt-4 leading-relaxed">
+                            Track your journey with a beautiful heatmap calendar and detailed charts. See your consistency and celebrate every small victory on your path to mastery.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2">
+                        <!-- TODO: Replace with your feature 3 screenshot -->
+                        <img src="002.png" alt="Statistics screen of Plank Breather" class="rounded-2xl shadow-xl w-3/4 mx-auto">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Philosophy Section -->
+        <section class="bg-gray-50 py-20 md:py-28 px-6 text-center">
+            <h2 class="section-title">Your Journey Has Two Paths.</h2>
+            <p class="section-subtitle">
+                Plank Breather guides you through a complete evolution. The first path teaches you to grow. The second teaches you to master.
+            </p>
+            <div class="mt-10 inline-block bg-white border border-gray-200 rounded-xl px-6 py-4 text-lg md:text-xl font-mono shadow-sm">
+                [ The Growth Path ] &nbsp;&nbsp;→&nbsp;&nbsp; [ The Mastery Path ]
+            </div>
+        </section>
+
+        <!-- Final CTA Section -->
+        <section class="text-center py-20 md:py-28 px-6">
+            <h2 class="section-title">Begin Your Practice Today.</h2>
+            <p class="section-subtitle">
+                Download Plank Breather and discover a calmer, stronger way to train.
+            </p>
+            <!-- TODO: Replace # with your App Store link -->
+            <a href="#" class="inline-block mt-8 transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1280px-Download_on_the_App_Store_Badge.svg.png" alt="Download on the App Store" class="h-14">
+            </a>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer>
-        <a href="privacy.html">Privacy Policy</a> | 
-        <a href="terms.html">Terms of Use</a> | 
-        <a href="support.html">Support</a>
+    <footer class="border-t border-gray-200">
+        <div class="max-w-5xl mx-auto px-6 py-8 text-center text-gray-500 text-sm">
+            <!-- TODO: Replace # with your actual links -->
+            <div class="space-x-6">
+                <a href="#" class="hover:text-gray-800">Privacy Policy</a>
+                <a href="#" class="hover:text-gray-800">Terms of Use</a>
+                <a href="#" class="hover:text-gray-800">Support</a>
+            </div>
+            <p class="mt-4">&copy; 2025 [Your Name or Company Name]. All rights reserved.</p>
+        </div>
     </footer>
 
 </body>
