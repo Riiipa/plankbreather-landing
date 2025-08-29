@@ -9,6 +9,15 @@
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="shortcut icon" href="icon.png">
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VSTNL4FD1Q"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VSTNL4FD1Q'); // Замініть на ваш Measurement ID
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,12 +56,12 @@
     <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-10 border-b border-gray-200">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <!-- ▼▼▼ ОСЬ ЗМІНА: Додано клас 'shadow' для тіні ▼▼▼ -->
                 <img src="app-icon.png" alt="Plank Breather App Icon" class="w-10 h-10 rounded-lg shadow" onerror="this.onerror=null;this.src='https://placehold.co/40x40/000000/FFFFFF?text=PB';">
-                <!-- ▲▲▲ КІНЕЦЬ ЗМІН ▲▲▲ -->
                 <span class="font-bold text-xl">Plank Breather</span>
             </div>
-            <a href="https://apps.apple.com/app/id6751116075" class="hidden sm:inline-block bg-gray-800 text-white font-semibold px-5 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            <a href="https://apps.apple.com/app/id6751116075" 
+               class="hidden sm:inline-block bg-gray-800 text-white font-semibold px-5 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+               onclick="trackDownloadClick('header')">
                 Download
             </a>
         </div>
@@ -67,7 +76,9 @@
             <p class="section-subtitle">
                 Transform the plank from a painful countdown into a mindful practice. Discover the strength that comes from calm, steady breathing.
             </p>
-            <a href="https://apps.apple.com/app/id6751116075" class="inline-block mt-8 transition-transform hover:scale-105">
+            <a href="https://apps.apple.com/app/id6751116075" 
+               class="inline-block mt-8 transition-transform hover:scale-105"
+               onclick="trackDownloadClick('hero')">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1280px-Download_on_the_App_Store_Badge.svg.png" alt="Download on the App Store" class="h-14">
             </a>
         </section>
@@ -84,8 +95,10 @@
                         </p>
                     </div>
                     <div class="md:w-1/2">
-                         <!-- Замініть на ваш скріншот -->
-                        <img src="001.png" alt="App interface showing the breathing animation" class="screenshot w-4/4 mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x1200/000000/FFFFFF?text=Feature+1';">
+                        <img src="001.png" alt="App interface showing the breathing animation" 
+                             class="screenshot w-4/4 mx-auto" 
+                             onclick="trackFeatureView('meditation_feature')"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x1200/000000/FFFFFF?text=Feature+1';">
                     </div>
                 </div>
 
@@ -98,8 +111,10 @@
                         </p>
                     </div>
                     <div class="md:w-1/2">
-                        <!-- Замініть на ваш скріншот -->
-                        <img src="002.png" alt="Breath Program screen" class="screenshot w-4/4 mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x1200/000000/FFFFFF?text=Feature+2';">
+                        <img src="002.png" alt="Breath Program screen" 
+                             class="screenshot w-4/4 mx-auto"
+                             onclick="trackFeatureView('habit_building')"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x1200/000000/FFFFFF?text=Feature+2';">
                     </div>
                 </div>
 
@@ -112,8 +127,10 @@
                         </p>
                     </div>
                     <div class="md:w-1/2">
-                        <!-- Замініть на ваш скріншот -->
-                        <img src="004.png" alt="Statistics screen of Plank Breather" class="screenshot w-4/4 mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x1200/000000/FFFFFF?text=Feature+3';">
+                        <img src="004.png" alt="Statistics screen of Plank Breather" 
+                             class="screenshot w-4/4 mx-auto"
+                             onclick="trackFeatureView('statistics')"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x1200/000000/FFFFFF?text=Feature+3';">
                     </div>
                 </div>
             </div>
@@ -136,7 +153,9 @@
             <p class="section-subtitle">
                 Download Plank Breather and discover a calmer, stronger way to train.
             </p>
-            <a href="https://apps.apple.com/app/id6751116075" class="inline-block mt-8 transition-transform hover:scale-105">
+            <a href="https://apps.apple.com/app/id6751116075" 
+               class="inline-block mt-8 transition-transform hover:scale-105"
+               onclick="trackDownloadClick('final_cta')">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1280px-Download_on_the_App_Store_Badge.svg.png" alt="Download on the App Store" class="h-14">
             </a>
         </section>
@@ -145,15 +164,68 @@
     <!-- Footer -->
     <footer class="border-t border-gray-200">
         <div class="max-w-5xl mx-auto px-6 py-8 text-center text-gray-500 text-sm">
-            <!-- Замініть # на ваші посилання -->
             <div class="space-x-6">
-                <a href="privacy.html">Privacy Policy</a> 
-                <a href="terms.html">Terms of Use</a>
-                <a href="support.html">Support</a>
+                <a href="privacy.html" onclick="trackFooterClick('privacy')">Privacy Policy</a> 
+                <a href="terms.html" onclick="trackFooterClick('terms')">Terms of Use</a>
+                <a href="support.html" onclick="trackFooterClick('support')">Support</a>
             </div>
             <p class="mt-4">&copy; 2025 Dmytro Ripa. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Custom Analytics Events -->
+    <script>
+        // Tracking функції
+        function trackDownloadClick(location) {
+            gtag('event', 'app_download_click', {
+                'location': location,
+                'app_name': 'Plank Breather'
+            });
+        }
+
+        function trackFeatureView(feature) {
+            gtag('event', 'feature_interaction', {
+                'feature_name': feature
+            });
+        }
+
+        function trackFooterClick(link) {
+            gtag('event', 'footer_navigation', {
+                'link_name': link
+            });
+        }
+
+        // Scroll tracking
+        let scrollTracked = {
+            25: false,
+            50: false,
+            75: false,
+            100: false
+        };
+
+        window.addEventListener('scroll', function() {
+            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            
+            Object.keys(scrollTracked).forEach(threshold => {
+                if (scrollPercent >= threshold && !scrollTracked[threshold]) {
+                    scrollTracked[threshold] = true;
+                    gtag('event', 'scroll_depth', {
+                        'depth_percent': threshold
+                    });
+                }
+            });
+        });
+
+        // Time on page tracking
+        let startTime = Date.now();
+        
+        window.addEventListener('beforeunload', function() {
+            const timeOnPage = Math.round((Date.now() - startTime) / 1000);
+            gtag('event', 'time_on_page', {
+                'seconds': timeOnPage
+            });
+        });
+    </script>
 
 </body>
 </html>
