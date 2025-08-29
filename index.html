@@ -15,7 +15,14 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-VSTNL4FD1Q'); // Замініть на ваш Measurement ID
+        
+        // Initialize with consent mode
+        gtag('consent', 'default', {
+            'analytics_storage': 'denied',
+            'ad_storage': 'denied'
+        });
+        
+        gtag('config', 'G-VSTNL4FD1Q');
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,6 +54,30 @@
         @media (max-width: 768px) {
             .section-title { font-size: 2rem; } /* 32px */
             .section-subtitle { font-size: 1.125rem; } /* 18px */
+        }
+        
+        /* Cookie Banner Styles */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px;
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .cookie-banner.show {
+            transform: translateY(0);
+        }
+        .cookie-banner button {
+            transition: all 0.2s ease;
+        }
+        .cookie-banner button:hover {
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -173,8 +204,89 @@
         </div>
     </footer>
 
+    <!-- Cookie Consent Banner -->
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-center sm:text-left flex-1">
+                <p class="text-sm sm:text-base">
+                    We use cookies and analytics to improve your experience and understand how you interact with our site. 
+                    <a href="privacy.html" class="text-blue-300 hover:text-blue-200 underline">Learn more</a>
+                </p>
+            </div>
+            <div class="flex gap-3 flex-shrink-0">
+                <button onclick="rejectCookies()" 
+                        class="px-4 py-2 text-sm border border-gray-400 text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white">
+                    Decline
+                </button>
+                <button onclick="acceptCookies()" 
+                        class="px-6 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium">
+                    Accept All
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Analytics Events -->
     <script>
+        // Cookie consent management
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+        }
+
+        function acceptCookies() {
+            // Update consent
+            gtag('consent', 'update', {
+                'analytics_storage': 'granted'
+            });
+            
+            // Set cookie to remember choice
+            setCookie('cookieConsent', 'accepted', 365);
+            
+            // Hide banner
+            document.getElementById('cookieBanner').classList.remove('show');
+        }
+
+        function rejectCookies() {
+            // Keep consent denied
+            gtag('consent', 'update', {
+                'analytics_storage': 'denied'
+            });
+            
+            // Set cookie to remember choice
+            setCookie('cookieConsent', 'rejected', 365);
+            
+            // Hide banner
+            document.getElementById('cookieBanner').classList.remove('show');
+        }
+
+        // Check consent on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const consent = getCookie('cookieConsent');
+            
+            if (consent === 'accepted') {
+                gtag('consent', 'update', {
+                    'analytics_storage': 'granted'
+                });
+            } else if (consent === 'rejected') {
+                gtag('consent', 'update', {
+                    'analytics_storage': 'denied'
+                });
+            } else {
+                // Show banner if no choice made
+                setTimeout(() => {
+                    document.getElementById('cookieBanner').classList.add('show');
+                }, 1000);
+            }
+        });
+
         // Tracking функції
         function trackDownloadClick(location) {
             gtag('event', 'app_download_click', {
