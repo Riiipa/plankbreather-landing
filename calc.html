@@ -26,7 +26,115 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // --- ІКОНКИ (SVG Components замість lucide-react для роботи без збірки) ---
+        // --- ТЕКСТИ ПЕРЕКЛАДУ (СЛОВНИК) ---
+        const TRANSLATIONS = {
+            ua: {
+                title: "Калькулятор Інвестора (LMNP)",
+                subtitle: "Симуляція: Нерухомість vs Акції",
+                projectCost: "Вартість Проекту",
+                priceLabel: "Ціна квартири (€)",
+                worksLabel: "Ремонт/Меблі (€)",
+                notaryLabel: "Нотаріус (8%)",
+                totalCostLabel: "Повна вартість:",
+                financing: "Фінансування",
+                contributionLabel: "Ваш внесок (Apport) (€)",
+                rateLabel: "Ставка %",
+                yearsLabel: "Років",
+                insuranceLabel: "Страховка %",
+                monthlyPaymentLabel: "Кредитний платіж:",
+                operations: "Операційна діяльність",
+                rentLabel: "Оренда (на місяць)",
+                chargesLabel: "Комунальні (Charges)",
+                taxLabel: "Taxe Foncière (рік)",
+                otherLabel: "Інше (PNO/Бух) рік",
+                monthlyCashFlow: "Щомісячний Cash Flow",
+                month: "міс",
+                negativeFlowMsg: "Це ваша доплата щомісяця (Effort d'épargne).",
+                positiveFlowMsg: "Вітаємо! Квартира окупає себе сама.",
+                whereMoneyGoes: "Куди йдуть гроші (щомісяця)",
+                incomeRent: "Оренда (Дохід)",
+                expenseLoan: "Кредит + Страховка",
+                expenseTax: "Комунальні + Податки",
+                expenseReserve: "Резерв (Простій + Ремонт)",
+                totalExpenses: "Всього витрат",
+                grossYield: "Брутто прибутковість",
+                leverage: "Кредитне плече",
+                summaryTitle: "Підсумок за",
+                years: "років",
+                tenant: "Орендар",
+                you: "Ви",
+                paidByTenant: "Оплачено Орендарем",
+                paidByTenantDesc: "Всі орендні платежі за період.",
+                paidByYou: "Оплачено Вами",
+                paidByYouDesc: "Ваш внесок + всі щомісячні доплати.",
+                bankInterest: "Переплата банку",
+                bankInterestDesc: "відсотків за весь строк.",
+                youWillPay: "ви заплатите",
+                battleTitle: "Битва Стратегій: Через",
+                battleSubtitle: "Альтернатива:",
+                investInStocks: "в акції",
+                realEstate: "Нерухомість",
+                stocks: "Акції",
+                assetValue: "Вартість активу (+2%/рік)",
+                atRate: "При",
+                annual: "% річних",
+                conservative: "(консервативно)"
+            },
+            ru: {
+                title: "Калькулятор Инвестора (LMNP)",
+                subtitle: "Симуляция: Недвижимость vs Акции",
+                projectCost: "Стоимость Проекта",
+                priceLabel: "Цена квартиры (€)",
+                worksLabel: "Ремонт/Мебель (€)",
+                notaryLabel: "Нотариус (8%)",
+                totalCostLabel: "Полная стоимость:",
+                financing: "Финансирование",
+                contributionLabel: "Ваш взнос (Apport) (€)",
+                rateLabel: "Ставка %",
+                yearsLabel: "Лет",
+                insuranceLabel: "Страховка %",
+                monthlyPaymentLabel: "Кредитный платеж:",
+                operations: "Операционная деятельность",
+                rentLabel: "Аренда (в месяц)",
+                chargesLabel: "Коммунальные (Charges)",
+                taxLabel: "Taxe Foncière (год)",
+                otherLabel: "Другое (PNO/Бух) год",
+                monthlyCashFlow: "Ежемесячный Cash Flow",
+                month: "мес",
+                negativeFlowMsg: "Это ваша доплата ежемесячно (Effort d'épargne).",
+                positiveFlowMsg: "Поздравляем! Квартира окупает себя сама.",
+                whereMoneyGoes: "Куда уходят деньги (ежемесячно)",
+                incomeRent: "Аренда (Доход)",
+                expenseLoan: "Кредит + Страховка",
+                expenseTax: "Коммунальные + Налоги",
+                expenseReserve: "Резерв (Простой + Ремонт)",
+                totalExpenses: "Всего расходов",
+                grossYield: "Брутто доходность",
+                leverage: "Кредитное плечо",
+                summaryTitle: "Итог за",
+                years: "лет",
+                tenant: "Арендатор",
+                you: "Вы",
+                paidByTenant: "Оплачено Арендатором",
+                paidByTenantDesc: "Все арендные платежи за период.",
+                paidByYou: "Оплачено Вами",
+                paidByYouDesc: "Ваш взнос + все ежемесячные доплаты.",
+                bankInterest: "Переплата банку",
+                bankInterestDesc: "процентов за весь срок.",
+                youWillPay: "вы заплатите",
+                battleTitle: "Битва Стратегий: Через",
+                battleSubtitle: "Альтернатива:",
+                investInStocks: "в акции",
+                realEstate: "Недвижимость",
+                stocks: "Акции",
+                assetValue: "Стоимость актива (+2%/год)",
+                atRate: "При",
+                annual: "% годовых",
+                conservative: "(консервативно)"
+            }
+        };
+
+        // --- ІКОНКИ ---
         const IconWrapper = ({ children, color = "currentColor", size = 24, className = "" }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 {children}
@@ -48,20 +156,20 @@
 
         // --- ГОЛОВНИЙ КОМПОНЕНТ ---
         const RealEstateCalculator = () => {
+            // Мова (State)
+            const [lang, setLang] = useState('ua'); // 'ua' або 'ru'
+            const t = TRANSLATIONS[lang];
+
             // --- STATE: Вхідні дані ---
-            
-            // 1. Об'єкт
             const [price, setPrice] = useState(150000);
             const [area, setArea] = useState(19);
             const [works, setWorks] = useState(10000); 
             
-            // 2. Фінансування
             const [contribution, setContribution] = useState(25000); 
             const [rate, setRate] = useState(3.7); 
             const [duration, setDuration] = useState(20); 
             const [insuranceRate, setInsuranceRate] = useState(0.35); 
 
-            // 3. Експлуатація
             const [rent, setRent] = useState(750); 
             const [chargesCopro, setChargesCopro] = useState(70); 
             const [taxeFonciere, setTaxeFonciere] = useState(600); 
@@ -69,7 +177,6 @@
             const [accountant, setAccountant] = useState(250); 
             const [vacancyRate, setVacancyRate] = useState(5); 
 
-            // 4. Альтернативні інвестиції
             const [sp500Rate, setSp500Rate] = useState(8); 
             const [techRate, setTechRate] = useState(12); 
 
@@ -130,11 +237,27 @@
 
             return (
                 <div className="max-w-4xl mx-auto p-4 bg-gray-50 rounded-xl font-sans text-gray-800 shadow-xl">
-                    <div className="flex items-center gap-2 mb-6 border-b pb-4 border-gray-200">
-                        <Home className="text-blue-600 w-8 h-8" />
-                        <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Калькулятор Інвестора (LMNP)</h1>
-                        <p className="text-sm text-gray-500">Симуляція: Нерухомість vs Акції</p>
+                    <div className="flex items-center justify-between mb-6 border-b pb-4 border-gray-200">
+                        <div className="flex items-center gap-2">
+                            <Home className="text-blue-600 w-8 h-8" />
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900">{t.title}</h1>
+                                <p className="text-sm text-gray-500">{t.subtitle}</p>
+                            </div>
+                        </div>
+                        <div className="flex bg-gray-200 rounded-lg p-1">
+                            <button 
+                                onClick={() => setLang('ua')}
+                                className={`px-3 py-1 rounded-md text-sm font-semibold transition-colors ${lang === 'ua' ? 'bg-white text-blue-800 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
+                            >
+                                UA
+                            </button>
+                            <button 
+                                onClick={() => setLang('ru')}
+                                className={`px-3 py-1 rounded-md text-sm font-semibold transition-colors ${lang === 'ru' ? 'bg-white text-blue-800 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
+                            >
+                                RU
+                            </button>
                         </div>
                     </div>
 
@@ -143,75 +266,75 @@
                         <div className="space-y-6">
                             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
                                 <h3 className="text-md font-semibold text-blue-800 mb-4 flex items-center gap-2">
-                                <Calculator size={18}/> Вартість Проекту
+                                <Calculator size={18}/> {t.projectCost}
                                 </h3>
                                 <div className="space-y-3">
                                 <div>
-                                    <label className="text-xs font-medium text-gray-500 uppercase">Ціна квартири (€)</label>
+                                    <label className="text-xs font-medium text-gray-500 uppercase">{t.priceLabel}</label>
                                     <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition"/>
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                    <label className="text-xs font-medium text-gray-500 uppercase">Ремонт/Меблі (€)</label>
+                                    <label className="text-xs font-medium text-gray-500 uppercase">{t.worksLabel}</label>
                                     <input type="number" value={works} onChange={(e) => setWorks(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                     </div>
                                     <div>
-                                    <label className="text-xs font-medium text-gray-500 uppercase">Нотаріус (8%)</label>
+                                    <label className="text-xs font-medium text-gray-500 uppercase">{t.notaryLabel}</label>
                                     <div className="w-full mt-1 p-2 bg-gray-100 rounded-md text-gray-600">{notaryFees.toLocaleString()} €</div>
                                     </div>
                                 </div>
                                 <div className="pt-2 border-t flex justify-between items-center">
-                                    <span className="font-semibold text-sm">Повна вартість:</span>
+                                    <span className="font-semibold text-sm">{t.totalCostLabel}</span>
                                     <span className="font-bold text-lg text-blue-900">{totalProjectCost.toLocaleString()} €</span>
                                 </div>
                                 </div>
                             </div>
 
                             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-                                <h3 className="text-md font-semibold text-blue-800 mb-4 flex items-center gap-2"><Euro size={18}/> Фінансування</h3>
+                                <h3 className="text-md font-semibold text-blue-800 mb-4 flex items-center gap-2"><Euro size={18}/> {t.financing}</h3>
                                 <div className="space-y-3">
                                 <div>
-                                    <label className="text-xs font-medium text-gray-500 uppercase">Ваш внесок (Apport) (€)</label>
+                                    <label className="text-xs font-medium text-gray-500 uppercase">{t.contributionLabel}</label>
                                     <input type="number" value={contribution} onChange={(e) => setContribution(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"/>
                                 </div>
                                 <div className="grid grid-cols-3 gap-3">
                                     <div className="col-span-1">
-                                    <label className="text-xs font-medium text-gray-500 uppercase">Ставка %</label>
+                                    <label className="text-xs font-medium text-gray-500 uppercase">{t.rateLabel}</label>
                                     <input type="number" step="0.01" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                     </div>
                                     <div className="col-span-1">
-                                    <label className="text-xs font-medium text-gray-500 uppercase">Років</label>
+                                    <label className="text-xs font-medium text-gray-500 uppercase">{t.yearsLabel}</label>
                                     <input type="number" value={duration} onChange={(e) => setDuration(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                     </div>
                                     <div className="col-span-1">
-                                    <label className="text-xs font-medium text-gray-500 uppercase">Страховка %</label>
+                                    <label className="text-xs font-medium text-gray-500 uppercase">{t.insuranceLabel}</label>
                                     <input type="number" step="0.01" value={insuranceRate} onChange={(e) => setInsuranceRate(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                     </div>
                                 </div>
                                 <div className="p-3 bg-blue-50 rounded-md flex justify-between items-center border border-blue-100">
-                                    <span className="text-sm text-blue-800 font-medium">Кредитний платіж:</span>
-                                    <span className="font-bold text-blue-900">{totalMonthlyLoan.toFixed(0)} €/міс</span>
+                                    <span className="text-sm text-blue-800 font-medium">{t.monthlyPaymentLabel}</span>
+                                    <span className="font-bold text-blue-900">{totalMonthlyLoan.toFixed(0)} €/{t.month}</span>
                                 </div>
                                 </div>
                             </div>
 
                             <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-                                <h3 className="text-md font-semibold text-blue-800 mb-4 flex items-center gap-2"><TrendingUp size={18}/> Операційна діяльність</h3>
+                                <h3 className="text-md font-semibold text-blue-800 mb-4 flex items-center gap-2"><TrendingUp size={18}/> {t.operations}</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-xs font-medium text-green-600 uppercase">Оренда (на місяць)</label>
+                                    <label className="text-xs font-medium text-green-600 uppercase">{t.rentLabel}</label>
                                     <input type="number" value={rent} onChange={(e) => setRent(Number(e.target.value))} className="w-full mt-1 p-2 border border-green-200 bg-green-50 rounded-md font-semibold text-green-800"/>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-medium text-red-500 uppercase">Комунальні (Charges)</label>
+                                    <label className="text-xs font-medium text-red-500 uppercase">{t.chargesLabel}</label>
                                     <input type="number" value={chargesCopro} onChange={(e) => setChargesCopro(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-medium text-red-500 uppercase">Taxe Foncière (рік)</label>
+                                    <label className="text-xs font-medium text-red-500 uppercase">{t.taxLabel}</label>
                                     <input type="number" value={taxeFonciere} onChange={(e) => setTaxeFonciere(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-medium text-red-500 uppercase">Інше (PNO/Бух) рік</label>
+                                    <label className="text-xs font-medium text-red-500 uppercase">{t.otherLabel}</label>
                                     <input type="number" value={pno + accountant} onChange={(e) => setPno(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                 </div>
                                 </div>
@@ -221,53 +344,53 @@
                         {/* ПРАВА КОЛОНКА */}
                         <div className="space-y-6">
                             <div className={`p-6 rounded-xl shadow-md text-white ${cashFlow >= 0 ? 'bg-green-600' : 'bg-slate-800'}`}>
-                                <h2 className="text-sm font-medium opacity-80 uppercase tracking-wider mb-1">Щомісячний Cash Flow</h2>
+                                <h2 className="text-sm font-medium opacity-80 uppercase tracking-wider mb-1">{t.monthlyCashFlow}</h2>
                                 <div className="flex items-baseline gap-2">
                                 <span className="text-5xl font-bold">{cashFlow > 0 ? '+' : ''}{cashFlow.toFixed(0)} €</span>
-                                <span className="text-lg opacity-80">/ міс</span>
+                                <span className="text-lg opacity-80">/ {t.month}</span>
                                 </div>
                                 <p className="mt-4 text-sm opacity-90 flex items-start gap-2">
                                 <Info size={16} className="mt-1 flex-shrink-0" />
-                                {cashFlow < 0 ? "Це ваша доплата щомісяця (Effort d'épargne)." : "Вітаємо! Квартира окупає себе сама."}
+                                {cashFlow < 0 ? t.negativeFlowMsg : t.positiveFlowMsg}
                                 </p>
                             </div>
 
                             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                                <h3 className="text-lg font-bold text-gray-800 mb-4">Куди йдуть гроші (щомісяця)</h3>
+                                <h3 className="text-lg font-bold text-gray-800 mb-4">{t.whereMoneyGoes}</h3>
                                 <div className="space-y-3">
                                 <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                                    <span className="text-green-700 font-semibold">Оренда (Дохід)</span>
+                                    <span className="text-green-700 font-semibold">{t.incomeRent}</span>
                                     <span className="text-green-700 font-bold">+ {rent} €</span>
                                 </div>
-                                <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-blue-500">Кредит + Страховка</span><span className="text-red-500 font-medium">- {totalMonthlyLoan.toFixed(0)} €</span></div>
-                                <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-orange-400">Комунальні + Податки</span><span className="text-red-500 font-medium">- {(chargesCopro + monthlyTaxeFonciere).toFixed(0)} €</span></div>
-                                <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-yellow-400">Резерв (Простій + Ремонт)</span><span className="text-red-500 font-medium">- {(monthlyVacancy + rent*0.05).toFixed(0)} €</span></div>
-                                <div className="pt-3 mt-2 border-t flex justify-between items-center font-bold"><span className="text-gray-800">Всього витрат</span><span className="text-red-600">- {totalOutflow.toFixed(0)} €</span></div>
+                                <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-blue-500">{t.expenseLoan}</span><span className="text-red-500 font-medium">- {totalMonthlyLoan.toFixed(0)} €</span></div>
+                                <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-orange-400">{t.expenseTax}</span><span className="text-red-500 font-medium">- {(chargesCopro + monthlyTaxeFonciere).toFixed(0)} €</span></div>
+                                <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-yellow-400">{t.expenseReserve}</span><span className="text-red-500 font-medium">- {(monthlyVacancy + rent*0.05).toFixed(0)} €</span></div>
+                                <div className="pt-3 mt-2 border-t flex justify-between items-center font-bold"><span className="text-gray-800">{t.totalExpenses}</span><span className="text-red-600">- {totalOutflow.toFixed(0)} €</span></div>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-blue-50 p-4 rounded-lg text-center"><div className="text-xs text-blue-600 uppercase font-semibold mb-1">Брутто прибутковість</div><div className="text-2xl font-bold text-blue-900">{grossYield.toFixed(2)}%</div></div>
-                                <div className="bg-purple-50 p-4 rounded-lg text-center"><div className="text-xs text-purple-600 uppercase font-semibold mb-1">Кредитне плече</div><div className="text-2xl font-bold text-purple-900">{((loanAmount/totalProjectCost)*100).toFixed(0)}%</div></div>
+                                <div className="bg-blue-50 p-4 rounded-lg text-center"><div className="text-xs text-blue-600 uppercase font-semibold mb-1">{t.grossYield}</div><div className="text-2xl font-bold text-blue-900">{grossYield.toFixed(2)}%</div></div>
+                                <div className="bg-purple-50 p-4 rounded-lg text-center"><div className="text-xs text-purple-600 uppercase font-semibold mb-1">{t.leverage}</div><div className="text-2xl font-bold text-purple-900">{((loanAmount/totalProjectCost)*100).toFixed(0)}%</div></div>
                             </div>
                         </div>
                     </div>
 
                     {/* ПІДСУМОК ЗА ВЕСЬ ЧАС */}
                     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mb-8">
-                        <div className="bg-gray-900 p-4 flex items-center gap-3"><PieChart className="text-green-400" /><h2 className="text-white text-lg font-bold">Підсумок за {duration} років</h2></div>
+                        <div className="bg-gray-900 p-4 flex items-center gap-3"><PieChart className="text-green-400" /><h2 className="text-white text-lg font-bold">{t.summaryTitle} {duration} {t.years}</h2></div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                         <div className="md:col-span-1 flex flex-col items-center justify-center">
                             <div className="w-full h-8 bg-blue-900 rounded-full overflow-hidden flex relative shadow-inner">
                                 <div className="h-full bg-green-500 flex items-center justify-center text-xs font-bold text-white transition-all duration-1000" style={{ width: `${percentTenant}%` }}>{percentTenant.toFixed(0)}%</div>
                                 <div className="h-full flex items-center justify-center text-xs font-bold text-white flex-1">{percentInvestor.toFixed(0)}%</div>
                             </div>
-                            <div className="flex justify-between w-full mt-2 text-sm font-semibold"><span className="text-green-600">Орендар</span><span className="text-blue-900">Ви</span></div>
+                            <div className="flex justify-between w-full mt-2 text-sm font-semibold"><span className="text-green-600">{t.tenant}</span><span className="text-blue-900">{t.you}</span></div>
                         </div>
                         <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="p-4 bg-green-50 rounded-lg border border-green-100 relative"><div className="absolute top-4 right-4 text-green-200"><Users size={24} /></div><p className="text-xs text-green-600 uppercase font-bold">Оплачено Орендарем</p><p className="text-2xl font-bold text-green-800 mt-1">{totalTenantPaid.toLocaleString()} €</p></div>
-                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 relative"><div className="absolute top-4 right-4 text-blue-200"><Wallet size={24} /></div><p className="text-xs text-blue-600 uppercase font-bold">Оплачено Вами</p><p className="text-2xl font-bold text-blue-900 mt-1">{totalInvestorPaid.toLocaleString()} €</p></div>
-                            <div className="col-span-1 sm:col-span-2 mt-2 p-4 bg-red-50 rounded-lg border border-red-100 relative"><div className="flex gap-4 items-center"><div className="p-2 bg-red-100 rounded-full text-red-600 hidden sm:block"><Banknote size={24} /></div><div><p className="text-sm font-semibold text-red-800 mb-1">Переплата банку</p><p className="text-xs text-gray-600 mb-2">За {duration} років ви заплатите <span className="font-bold text-red-700">{costOfCredit.toLocaleString()} €</span> відсотків.</p></div></div></div>
+                            <div className="p-4 bg-green-50 rounded-lg border border-green-100 relative"><div className="absolute top-4 right-4 text-green-200"><Users size={24} /></div><p className="text-xs text-green-600 uppercase font-bold">{t.paidByTenant}</p><p className="text-2xl font-bold text-green-800 mt-1">{totalTenantPaid.toLocaleString()} €</p><p className="text-xs text-green-600 mt-2">{t.paidByTenantDesc}</p></div>
+                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 relative"><div className="absolute top-4 right-4 text-blue-200"><Wallet size={24} /></div><p className="text-xs text-blue-600 uppercase font-bold">{t.paidByYou}</p><p className="text-2xl font-bold text-blue-900 mt-1">{totalInvestorPaid.toLocaleString()} €</p><p className="text-xs text-blue-500 mt-2">{t.paidByYouDesc}</p></div>
+                            <div className="col-span-1 sm:col-span-2 mt-2 p-4 bg-red-50 rounded-lg border border-red-100 relative"><div className="flex gap-4 items-center"><div className="p-2 bg-red-100 rounded-full text-red-600 hidden sm:block"><Banknote size={24} /></div><div><p className="text-sm font-semibold text-red-800 mb-1">{t.bankInterest}</p><p className="text-xs text-gray-600 mb-2">{t.summaryTitle} {duration} {t.years} {t.youWillPay} <span className="font-bold text-red-700">{costOfCredit.toLocaleString()} €</span> {t.bankInterestDesc}</p></div></div></div>
                         </div>
                         </div>
                     </div>
@@ -275,7 +398,7 @@
                     {/* БИТВА СТРАТЕГІЙ */}
                     <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-xl shadow-lg border border-indigo-800 overflow-hidden">
                         <div className="p-6 border-b border-indigo-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div><h2 className="text-white text-xl font-bold flex items-center gap-2"><LineChart className="text-yellow-400" />Битва Стратегій: Через {duration} років</h2><p className="text-indigo-200 text-sm mt-1">Альтернатива: {contribution.toLocaleString()}€ + {monthlyInvestAlternative.toFixed(0)}€/міс в акції</p></div>
+                        <div><h2 className="text-white text-xl font-bold flex items-center gap-2"><LineChart className="text-yellow-400" />{t.battleTitle} {duration} {t.years}</h2><p className="text-indigo-200 text-sm mt-1">{t.battleSubtitle} {contribution.toLocaleString()}€ + {monthlyInvestAlternative.toFixed(0)}€/{t.month} {t.investInStocks}</p></div>
                         <div className="flex gap-4 text-xs">
                             <div><label className="text-indigo-300 block mb-1">S&P500 %</label><input type="number" value={sp500Rate} onChange={e => setSp500Rate(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-20 text-center"/></div>
                             <div><label className="text-indigo-300 block mb-1">Tech %</label><input type="number" value={techRate} onChange={e => setTechRate(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-20 text-center"/></div>
@@ -284,9 +407,9 @@
                         
                         <div className="p-8">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end h-64">
-                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">Нерухомість</span><span className="text-white text-2xl font-bold">{finalValueRealEstate.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span></div><div className="w-full bg-blue-600 rounded-t-lg relative transition-all duration-500 hover:bg-blue-500" style={{height: `${(finalValueRealEstate / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
-                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">S&P 500</span><span className="text-white text-2xl font-bold">{finalValueSP500.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span></div><div className="w-full bg-yellow-500 rounded-t-lg relative transition-all duration-500 hover:bg-yellow-400" style={{height: `${(finalValueSP500 / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
-                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">Акції</span><span className="text-white text-2xl font-bold">{finalValueTech.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span></div><div className="w-full bg-purple-600 rounded-t-lg relative transition-all duration-500 hover:bg-purple-500" style={{height: `${(finalValueTech / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
+                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.realEstate}</span><span className="text-white text-2xl font-bold">{finalValueRealEstate.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span><span className="text-xs text-indigo-400 block">{t.assetValue}</span></div><div className="w-full bg-blue-600 rounded-t-lg relative transition-all duration-500 hover:bg-blue-500" style={{height: `${(finalValueRealEstate / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
+                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">S&P 500</span><span className="text-white text-2xl font-bold">{finalValueSP500.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span><span className="text-xs text-indigo-400 block">{t.atRate} {sp500Rate}{t.annual}</span></div><div className="w-full bg-yellow-500 rounded-t-lg relative transition-all duration-500 hover:bg-yellow-400" style={{height: `${(finalValueSP500 / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
+                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.stocks}</span><span className="text-white text-2xl font-bold">{finalValueTech.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span><span className="text-xs text-indigo-400 block">{t.atRate} {techRate}{t.annual} {t.conservative}</span></div><div className="w-full bg-purple-600 rounded-t-lg relative transition-all duration-500 hover:bg-purple-500" style={{height: `${(finalValueTech / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
                         </div>
                         </div>
                     </div>
