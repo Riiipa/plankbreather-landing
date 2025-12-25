@@ -78,7 +78,9 @@
                 totalInvested: "Всього вкладено:", 
                 realEstate: "Інвест. Квартира",
                 stocks: "Акції (S&P/Tech)",
-                rpStrategy: "Для Себе (RP)",
+                rpStrategySimple: "Для Себе (База)",
+                rpStrategySimpleDesc: "Тільки вартість квартири (заощадження проїли)",
+                rpStrategy: "Для Себе (PRO)",
                 rpDescription: "Квартира + Акції (з економії)",
                 currentRentLabel: "Ваша поточна оренда (€)",
                 assetValue: "Вартість активу",
@@ -148,7 +150,9 @@
                 totalInvested: "Всего вложено:", 
                 realEstate: "Инвест. Квартира",
                 stocks: "Акции (S&P/Tech)",
-                rpStrategy: "Для Себя (RP)",
+                rpStrategySimple: "Для Себя (База)",
+                rpStrategySimpleDesc: "Только стоимость квартиры (сбережения проели)",
+                rpStrategy: "Для Себя (PRO)",
                 rpDescription: "Квартира + Акции (из экономии)",
                 currentRentLabel: "Ваша текущая аренда (€)",
                 assetValue: "Стоимость актива",
@@ -242,10 +246,9 @@
 
             // --- РОЗРАХУНОК 1-го МІСЯЦЯ ДЛЯ RP (ДЛЯ ВІДОБРАЖЕННЯ) ---
             const monthlyExpFixed = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee;
-            // У формулі RP, ми рахували Outflow з Vacancy, як у симуляції.
             const initialRpTotalOutflow = totalMonthlyLoan + monthlyExpFixed + monthlyVacancy;
             const initialRpInvest = Math.max(0, currentRent - initialRpTotalOutflow + rent);
-            const initialRpHousingCost = totalMonthlyLoan + monthlyExpFixed; // Без Vacancy для відображення "реальних" витрат проживання
+            const initialRpHousingCost = totalMonthlyLoan + monthlyExpFixed; 
 
             // --- SIMULATION ---
             const simulation = useMemo(() => {
@@ -299,7 +302,10 @@
                 const totalInvestorCost = contribution + totalInvestorPaid;
                 const finalPropertyPrice = price * Math.pow(1.02, duration);
                 const finalRealEstateValue = finalPropertyPrice + totalRealEstateSurplus;
-                const finalRPValue = finalPropertyPrice + rpStockBalance; 
+                const finalRPValue = finalPropertyPrice + rpStockBalance;
+                
+                // NEW: Варіант "Просто Жити" (без інвестицій) = Тільки квартира
+                const finalRPValueSimple = finalPropertyPrice;
 
                 return {
                     totalTenantPaid,
@@ -309,6 +315,7 @@
                     finalSP500Value: sp500Balance,
                     finalTechValue: techBalance,
                     finalRPValue,
+                    finalRPValueSimple, // NEW
                     rpStockBalance,
                     rpCashInvested,
                     finalPropertyPrice
@@ -449,12 +456,12 @@
                         </div>
                         
                         <div className="p-8">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end h-72">
-                                {/* НЕРУХОМІСТЬ */}
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end h-72">
+                                {/* НЕРУХОМІСТЬ (ІНВЕСТ) */}
                                 <div className="flex flex-col justify-end h-full group">
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
                                         <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">{t.realEstate}</span>
-                                        <span className="text-white text-lg font-bold">{simulation.finalRealEstateValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-white text-md font-bold">{simulation.finalRealEstateValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-blue-600 rounded-t-lg relative transition-all duration-500 hover:bg-blue-500" 
@@ -467,7 +474,7 @@
                                 <div className="flex flex-col justify-end h-full group">
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
                                         <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">S&P 500</span>
-                                        <span className="text-white text-lg font-bold">{simulation.finalSP500Value.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-white text-md font-bold">{simulation.finalSP500Value.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-yellow-500 rounded-t-lg relative transition-all duration-500 hover:bg-yellow-400" 
@@ -480,7 +487,7 @@
                                 <div className="flex flex-col justify-end h-full group">
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
                                         <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">{t.stocks}</span>
-                                        <span className="text-white text-lg font-bold">{simulation.finalTechValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-white text-md font-bold">{simulation.finalTechValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-purple-600 rounded-t-lg relative transition-all duration-500 hover:bg-purple-500" 
@@ -489,12 +496,26 @@
                                     </div>
                                 </div>
 
-                                {/* RP (FOR SELF) */}
+                                {/* RP SIMPLE (Тільки житло) */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-2 flex-grow flex flex-col justify-end">
+                                        <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">{t.rpStrategySimple}</span>
+                                        <span className="text-white text-md font-bold">{simulation.finalRPValueSimple.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-[10px] text-indigo-400 block mt-1 leading-tight">{t.rpStrategySimpleDesc}</span>
+                                    </div>
+                                    <div className="h-48 w-full flex items-end">
+                                        <div className="w-full bg-slate-500 rounded-t-lg relative transition-all duration-500 hover:bg-slate-400" 
+                                             style={{height: `${(simulation.finalRPValueSimple / maxValue) * 100}%`}}>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* RP INVEST (PRO) */}
                                 <div className="flex flex-col justify-end h-full group">
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
                                         <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">{t.rpStrategy}</span>
-                                        <span className="text-white text-lg font-bold">{simulation.finalRPValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
-                                        <span className="text-xs text-indigo-400 block mt-1 leading-tight">{t.rpDescription}</span>
+                                        <span className="text-white text-md font-bold">{simulation.finalRPValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-[10px] text-indigo-400 block mt-1 leading-tight">{t.rpDescription}</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-green-500 rounded-t-lg relative transition-all duration-500 hover:bg-green-400" 
@@ -502,6 +523,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
