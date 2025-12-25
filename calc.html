@@ -56,6 +56,7 @@
                 expenseLoan: "Кредит + Страховка",
                 expenseTax: "Комунальні + Податки",
                 expenseReserve: "Резерв (Простій + Ремонт)",
+                expenseOther: "Інше (PNO, Бухгалтер)", // Новий ключ
                 totalExpenses: "Всього витрат",
                 grossYield: "Брутто прибутковість",
                 leverage: "Кредитне плече",
@@ -108,6 +109,7 @@
                 expenseLoan: "Кредит + Страховка",
                 expenseTax: "Коммунальные + Налоги",
                 expenseReserve: "Резерв (Простой + Ремонт)",
+                expenseOther: "Другое (PNO, Бухгалтер)", // Новий ключ
                 totalExpenses: "Всего расходов",
                 grossYield: "Брутто доходность",
                 leverage: "Кредитное плечо",
@@ -174,7 +176,6 @@
             const [chargesCopro, setChargesCopro] = useState(70); 
             const [taxeFonciere, setTaxeFonciere] = useState(600); 
             
-            // FIX: Об'єднали PNO та Бухгалтера в одну змінну
             const [otherExpenses, setOtherExpenses] = useState(400); // 150 (PNO) + 250 (Acc)
             
             const [vacancyRate, setVacancyRate] = useState(5); 
@@ -199,14 +200,10 @@
 
             // Витрати щомісячні
             const monthlyTaxeFonciere = taxeFonciere / 12;
-            
-            // FIX: Розрахунок місячної частки інших витрат
             const monthlyOtherExpenses = otherExpenses / 12;
-            
             const monthlyVacancy = rent * (vacancyRate / 100);
             const managementFee = 0; 
 
-            // FIX: Включили monthlyOtherExpenses в суму
             const totalMonthlyExpenses = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee + monthlyVacancy;
             const totalOutflow = totalMonthlyLoan + totalMonthlyExpenses;
             const cashFlow = rent - totalOutflow;
@@ -214,10 +211,7 @@
             // --- LIFETIME ---
             const totalMonths = duration * 12;
             const totalTenantPaid = (rent - monthlyVacancy) * totalMonths;
-            
-            // FIX: Включили monthlyOtherExpenses в Lifetime Cost
             const monthlyExpensesRealCash = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee;
-            
             const totalLifetimeCost = contribution + (totalMonthlyLoan * totalMonths) + (monthlyExpensesRealCash * totalMonths);
             const totalInvestorPaid = totalLifetimeCost - totalTenantPaid;
             const totalLoanRepayment = totalMonthlyLoan * totalMonths;
@@ -342,7 +336,6 @@
                                     <input type="number" value={taxeFonciere} onChange={(e) => setTaxeFonciere(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                 </div>
                                 <div>
-                                    {/* FIX: Використовуємо єдину змінну otherExpenses */}
                                     <label className="text-xs font-medium text-red-500 uppercase">{t.otherLabel}</label>
                                     <input type="number" value={otherExpenses} onChange={(e) => setOtherExpenses(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                 </div>
@@ -373,6 +366,7 @@
                                 </div>
                                 <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-blue-500">{t.expenseLoan}</span><span className="text-red-500 font-medium">- {totalMonthlyLoan.toFixed(0)} €</span></div>
                                 <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-orange-400">{t.expenseTax}</span><span className="text-red-500 font-medium">- {(chargesCopro + monthlyTaxeFonciere).toFixed(0)} €</span></div>
+                                <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-purple-400">{t.expenseOther}</span><span className="text-red-500 font-medium">- {monthlyOtherExpenses.toFixed(0)} €</span></div>
                                 <div className="flex justify-between items-center text-sm"><span className="text-gray-600 pl-2 border-l-2 border-yellow-400">{t.expenseReserve}</span><span className="text-red-500 font-medium">- {(monthlyVacancy + rent*0.05).toFixed(0)} €</span></div>
                                 <div className="pt-3 mt-2 border-t flex justify-between items-center font-bold"><span className="text-gray-800">{t.totalExpenses}</span><span className="text-red-600">- {totalOutflow.toFixed(0)} €</span></div>
                                 </div>
