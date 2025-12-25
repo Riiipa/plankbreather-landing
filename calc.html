@@ -79,10 +79,11 @@
                 realEstate: "Інвест. Квартира",
                 stocks: "Акції (S&P/Tech)",
                 rpStrategySimple: "Для Себе (База)",
-                rpStrategySimpleDesc: "Тільки вартість квартири (заощадження проїли)",
+                rpStrategySimpleDesc: "Живете в своїй, але без інвестицій",
                 rpStrategy: "Для Себе (PRO)",
-                rpDescription: "Квартира + Акції (з економії)",
-                currentRentLabel: "Ваша поточна оренда (€)",
+                rpDescription: "Квартира + Акції (весь залишок)", // Changed
+                currentRentLabel: "Поточна оренда (€)",
+                investBudgetLabel: "Бюджет інвестицій (€)", 
                 assetValue: "Вартість активу",
                 atRate: "При",
                 annual: "% річних",
@@ -95,7 +96,7 @@
                 rpTotalOut: "Всього витрат",
                 rpSimpleSavings: "Залишається на життя",
                 rpSimpleExtra: "Треба докласти",
-                rpSimpleDesc: "Ви живете у своїй квартирі, а різницю (економію) витрачаєте.",
+                rpSimpleDesc: "Всі вільні кошти витрачаються на життя.",
                 rpStockComponent: "В акціях",
                 rpTotal: "Всього активів"
             },
@@ -150,10 +151,11 @@
                 realEstate: "Инвест. Квартира",
                 stocks: "Акции (S&P/Tech)",
                 rpStrategySimple: "Для Себя (База)",
-                rpStrategySimpleDesc: "Только стоимость квартиры (сбережения проели)",
+                rpStrategySimpleDesc: "Живете в своей, но без инвестиций",
                 rpStrategy: "Для Себя (PRO)",
-                rpDescription: "Квартира + Акции (из экономии)",
-                currentRentLabel: "Ваша текущая аренда (€)",
+                rpDescription: "Квартира + Акции (весь остаток)", // Changed
+                currentRentLabel: "Текущая аренда (€)",
+                investBudgetLabel: "Бюджет инвестиций (€)", 
                 assetValue: "Стоимость актива",
                 atRate: "При",
                 annual: "% годовых",
@@ -166,7 +168,7 @@
                 rpTotalOut: "Всего расходов",
                 rpSimpleSavings: "Остается на жизнь",
                 rpSimpleExtra: "Нужно доложить",
-                rpSimpleDesc: "Вы живете в своей квартире, а разницу (экономию) тратите.",
+                rpSimpleDesc: "Все свободные средства тратятся на жизнь.",
                 rpStockComponent: "В акциях",
                 rpTotal: "Всего активов"
             }
@@ -212,8 +214,9 @@
             const [otherExpenses, setOtherExpenses] = useState(400); 
             const [vacancyRate, setVacancyRate] = useState(5); 
 
-            // NEW: Поточна оренда для порівняння RP
+            // NEW: Поточна оренда та бюджет на інвестиції
             const [currentRent, setCurrentRent] = useState(1250);
+            const [investmentBudget, setInvestmentBudget] = useState(400); 
 
             const [sp500Rate, setSp500Rate] = useState(8); 
             const [techRate, setTechRate] = useState(12); 
@@ -243,12 +246,19 @@
             const grossYield = (rent * 12 / totalProjectCost) * 100;
 
             // --- РОЗРАХУНОК 1-го МІСЯЦЯ ДЛЯ RP (ДЛЯ ВІДОБРАЖЕННЯ) ---
-            const monthlyExpFixed = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee;
-            const initialRpTotalOutflow = totalMonthlyLoan + monthlyExpFixed + monthlyVacancy;
-            const initialRpInvest = Math.max(0, currentRent - initialRpTotalOutflow + rent);
-            // Для бази: реальні витрати (Кредит + Комуналка + Податки)
-            const initialRpHousingCost = totalMonthlyLoan + monthlyExpFixed; 
-            // Різниця для бази (Залишається або Треба докласти)
+            const monthlyExpFixedNoVac = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee;
+            const initialRpHousingCost = totalMonthlyLoan + monthlyExpFixedNoVac; 
+            
+            // Логіка 5-го варіанту (PRO):
+            // Бюджет = 1250 (Оренда) + 400 (Інвест) = 1650
+            // Витрати = Кредит + Комуналка
+            // Залишок = 1650 - Витрати.
+            // Інвестиція = Весь позитивний залишок. (NO CAP)
+            const totalBudgetPool = currentRent + investmentBudget;
+            const potentialSurplus = totalBudgetPool - initialRpHousingCost;
+            const initialRpInvest = Math.max(0, potentialSurplus); // CHANGED: Remove Math.min, invest all surplus
+            
+            // Різниця для бази (Залишається або Треба докласти відносно 1250)
             const initialRpBaseDifference = currentRent - initialRpHousingCost;
 
             // --- SIMULATION ---
@@ -259,8 +269,8 @@
                 
                 let sp500Balance = contribution;
                 let techBalance = contribution;
-                let rpStockBalance = contribution; // Портфель для стратегії RP
-                let rpCashInvested = 0; // Чисті вкладені гроші в акції для RP
+                let rpStockBalance = contribution; 
+                let rpCashInvested = 0; 
 
                 let totalInvestedPrincipal = contribution;
 
@@ -288,9 +298,16 @@
                         techBalance = techBalance * (1 + techRate/100);
                     }
 
-                    // 2. RP (RESIDENCE PRINCIPALE) LOGIC
-                    const currentTotalOutflow = totalMonthlyLoan + monthlyExpFixed + currentMonthlyVacancy;
-                    const monthlyInvestRP = currentRent - currentTotalOutflow + currentMonthlyRent;
+                    // 2. RP (RESIDENCE PRINCIPALE) LOGIC PRO
+                    // Fixed expenses don't have vacancy when living in it
+                    const currentRpHousingCost = totalMonthlyLoan + monthlyExpFixed;
+                    
+                    // Total Budget Pool = Current Rent + Investment Budget
+                    const pool = currentRent + investmentBudget;
+                    const available = pool - currentRpHousingCost;
+                    
+                    // CHANGED: Invest ALL available funds (no limit)
+                    const monthlyInvestRP = Math.max(0, available);
                     
                     if (monthlyInvestRP > 0) {
                         rpStockBalance = rpStockBalance * (1 + techRate/100) + (monthlyInvestRP * 12);
@@ -304,8 +321,6 @@
                 const finalPropertyPrice = price * Math.pow(1.02, duration);
                 const finalRealEstateValue = finalPropertyPrice + totalRealEstateSurplus;
                 const finalRPValue = finalPropertyPrice + rpStockBalance;
-                
-                // NEW: Варіант "Просто Жити" (без інвестицій) = Тільки квартира
                 const finalRPValueSimple = finalPropertyPrice;
 
                 return {
@@ -316,13 +331,13 @@
                     finalSP500Value: sp500Balance,
                     finalTechValue: techBalance,
                     finalRPValue,
-                    finalRPValueSimple, // NEW
+                    finalRPValueSimple, 
                     rpStockBalance,
                     rpCashInvested,
                     finalPropertyPrice
                 };
 
-            }, [price, rent, rentIndexation, duration, contribution, totalMonthlyLoan, chargesCopro, monthlyTaxeFonciere, monthlyOtherExpenses, vacancyRate, sp500Rate, techRate, currentRent]);
+            }, [price, rent, rentIndexation, duration, contribution, totalMonthlyLoan, chargesCopro, monthlyTaxeFonciere, monthlyOtherExpenses, vacancyRate, sp500Rate, techRate, currentRent, investmentBudget]);
 
             const percentTenant = Math.min(100, Math.max(0, (simulation.totalTenantPaid / (simulation.totalTenantPaid + simulation.totalInvestorPaid)) * 100));
             const percentInvestor = 100 - percentTenant;
@@ -453,6 +468,7 @@
                                 <div><label className="text-indigo-300 block mb-1">S&P500 %</label><input type="number" value={sp500Rate} onChange={e => setSp500Rate(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-20 text-center"/></div>
                                 <div><label className="text-indigo-300 block mb-1">Tech %</label><input type="number" value={techRate} onChange={e => setTechRate(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-20 text-center"/></div>
                                 <div><label className="text-indigo-300 block mb-1">{t.currentRentLabel}</label><input type="number" value={currentRent} onChange={e => setCurrentRent(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-24 text-center"/></div>
+                                <div><label className="text-indigo-300 block mb-1">{t.investBudgetLabel}</label><input type="number" value={investmentBudget} onChange={e => setInvestmentBudget(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-24 text-center"/></div>
                             </div>
                         </div>
                         
