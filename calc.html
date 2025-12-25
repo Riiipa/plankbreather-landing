@@ -173,8 +173,10 @@
             const [rent, setRent] = useState(750); 
             const [chargesCopro, setChargesCopro] = useState(70); 
             const [taxeFonciere, setTaxeFonciere] = useState(600); 
-            const [pno, setPno] = useState(150); 
-            const [accountant, setAccountant] = useState(250); 
+            
+            // FIX: Об'єднали PNO та Бухгалтера в одну змінну
+            const [otherExpenses, setOtherExpenses] = useState(400); // 150 (PNO) + 250 (Acc)
+            
             const [vacancyRate, setVacancyRate] = useState(5); 
 
             const [sp500Rate, setSp500Rate] = useState(8); 
@@ -197,19 +199,25 @@
 
             // Витрати щомісячні
             const monthlyTaxeFonciere = taxeFonciere / 12;
-            const monthlyPNO = pno / 12;
-            const monthlyAccountant = accountant / 12;
+            
+            // FIX: Розрахунок місячної частки інших витрат
+            const monthlyOtherExpenses = otherExpenses / 12;
+            
             const monthlyVacancy = rent * (vacancyRate / 100);
             const managementFee = 0; 
 
-            const totalMonthlyExpenses = chargesCopro + monthlyTaxeFonciere + monthlyPNO + monthlyAccountant + managementFee + monthlyVacancy;
+            // FIX: Включили monthlyOtherExpenses в суму
+            const totalMonthlyExpenses = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee + monthlyVacancy;
             const totalOutflow = totalMonthlyLoan + totalMonthlyExpenses;
             const cashFlow = rent - totalOutflow;
 
             // --- LIFETIME ---
             const totalMonths = duration * 12;
             const totalTenantPaid = (rent - monthlyVacancy) * totalMonths;
-            const monthlyExpensesRealCash = chargesCopro + monthlyTaxeFonciere + monthlyPNO + monthlyAccountant + managementFee;
+            
+            // FIX: Включили monthlyOtherExpenses в Lifetime Cost
+            const monthlyExpensesRealCash = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee;
+            
             const totalLifetimeCost = contribution + (totalMonthlyLoan * totalMonths) + (monthlyExpensesRealCash * totalMonths);
             const totalInvestorPaid = totalLifetimeCost - totalTenantPaid;
             const totalLoanRepayment = totalMonthlyLoan * totalMonths;
@@ -334,8 +342,9 @@
                                     <input type="number" value={taxeFonciere} onChange={(e) => setTaxeFonciere(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                 </div>
                                 <div>
+                                    {/* FIX: Використовуємо єдину змінну otherExpenses */}
                                     <label className="text-xs font-medium text-red-500 uppercase">{t.otherLabel}</label>
-                                    <input type="number" value={pno + accountant} onChange={(e) => setPno(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
+                                    <input type="number" value={otherExpenses} onChange={(e) => setOtherExpenses(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/>
                                 </div>
                                 </div>
                             </div>
