@@ -406,11 +406,49 @@
                         </div>
                         
                         <div className="p-8">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end h-64">
-                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.realEstate}</span><span className="text-white text-2xl font-bold">{finalValueRealEstate.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span><span className="text-xs text-indigo-400 block">{t.assetValue}</span></div><div className="w-full bg-blue-600 rounded-t-lg relative transition-all duration-500 hover:bg-blue-500" style={{height: `${(finalValueRealEstate / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
-                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">S&P 500</span><span className="text-white text-2xl font-bold">{finalValueSP500.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span><span className="text-xs text-indigo-400 block">{t.atRate} {sp500Rate}{t.annual}</span></div><div className="w-full bg-yellow-500 rounded-t-lg relative transition-all duration-500 hover:bg-yellow-400" style={{height: `${(finalValueSP500 / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
-                            <div className="flex flex-col justify-end h-full group"><div className="text-center mb-2"><span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.stocks}</span><span className="text-white text-2xl font-bold">{finalValueTech.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span><span className="text-xs text-indigo-400 block">{t.atRate} {techRate}{t.annual} {t.conservative}</span></div><div className="w-full bg-purple-600 rounded-t-lg relative transition-all duration-500 hover:bg-purple-500" style={{height: `${(finalValueTech / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}></div></div>
-                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end h-72">
+                                {/* НЕРУХОМІСТЬ */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-2 flex-grow flex flex-col justify-end">
+                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.realEstate}</span>
+                                        <span className="text-white text-2xl font-bold">{finalValueRealEstate.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-xs text-indigo-400 block">{t.assetValue}</span>
+                                    </div>
+                                    <div className="h-48 w-full flex items-end">
+                                        <div className="w-full bg-blue-600 rounded-t-lg relative transition-all duration-500 hover:bg-blue-500" 
+                                             style={{height: `${(finalValueRealEstate / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* S&P 500 */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-2 flex-grow flex flex-col justify-end">
+                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">S&P 500</span>
+                                        <span className="text-white text-2xl font-bold">{finalValueSP500.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-xs text-indigo-400 block">{t.atRate} {sp500Rate}{t.annual}</span>
+                                    </div>
+                                    <div className="h-48 w-full flex items-end">
+                                        <div className="w-full bg-yellow-500 rounded-t-lg relative transition-all duration-500 hover:bg-yellow-400" 
+                                             style={{height: `${(finalValueSP500 / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* TECH */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-2 flex-grow flex flex-col justify-end">
+                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.stocks}</span>
+                                        <span className="text-white text-2xl font-bold">{finalValueTech.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-xs text-indigo-400 block">{t.atRate} {techRate}{t.annual} {t.conservative}</span>
+                                    </div>
+                                    <div className="h-48 w-full flex items-end">
+                                        <div className="w-full bg-purple-600 rounded-t-lg relative transition-all duration-500 hover:bg-purple-500" 
+                                             style={{height: `${(finalValueTech / Math.max(finalValueRealEstate, finalValueSP500, finalValueTech)) * 100}%`}}>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
