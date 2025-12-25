@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мій Інвестиційний Портфель (Live)</title>
+    <title>Мій Інвестиційний Портфель (Live Auto)</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,8 +31,10 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // --- ПОЧАТКОВІ ДАНІ (З ВАШИХ ФАЙЛІВ) ---
-        // Ці дані будуть використані, якщо немає підключення до Google Sheet
+        // --- ВАШЕ ПОСИЛАННЯ НА GOOGLE SHEET CSV ---
+        const USER_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTj7FK3pnPM1F5NY5UACPeS07Va4QWnT5h_IcprN_HTM9Wzvk7IfTL8AIUvl4Ewj3Ipwt45-yaGoFAv/pub?output=csv";
+
+        // --- ПОЧАТКОВІ ДАНІ (БАЗА) ---
         const INITIAL_PORTFOLIO = [
             { ticker: "GOOGL", name: "Alphabet Inc", qty: 8, avgPrice: 165.82, currPrice: 314.09, sector: "Communication" },
             { ticker: "AMAT", name: "Applied Materials", qty: 5, avgPrice: 198.29, currPrice: 260.78, sector: "Technology" },
@@ -75,35 +77,52 @@
         // --- ГОЛОВНИЙ ДОДАТОК ---
 
         const App = () => {
-            const [view, setView] = useState("portfolio"); // portfolio | watchlist
+            const [view, setView] = useState("portfolio"); 
             const [portfolio, setPortfolio] = useState(INITIAL_PORTFOLIO);
             const [watchlist, setWatchlist] = useState(INITIAL_WATCHLIST);
-            const [sheetUrl, setSheetUrl] = useState("");
+            const [sheetUrl, setSheetUrl] = useState(USER_SHEET_URL); // Встановлено за замовчуванням
             const [lastUpdated, setLastUpdated] = useState(null);
+            const [isLoading, setIsLoading] = useState(false);
+            const [errorMsg, setErrorMsg] = useState("");
             const [isSettingsOpen, setIsSettingsOpen] = useState(false);
             const [isAddAssetOpen, setIsAddAssetOpen] = useState(false);
             
-            // Стан для нового активу
             const [newAsset, setNewAsset] = useState({ ticker: "", qty: "", price: "", type: "portfolio" });
 
+            // --- АВТОМАТИЧНЕ ЗАВАНТАЖЕННЯ ПРИ СТАРТІ ---
+            useEffect(() => {
+                if (sheetUrl) {
+                    fetchSheetData(sheetUrl);
+                }
+            }, []);
+
             // --- ЛОГІКА ОНОВЛЕННЯ ДАНИХ ---
-            const fetchSheetData = async () => {
-                if (!sheetUrl) return;
+            const fetchSheetData = async (urlToFetch) => {
+                setIsLoading(true);
+                setErrorMsg("");
                 try {
-                    const response = await fetch(sheetUrl);
+                    const response = await fetch(urlToFetch);
                     const csvText = await response.text();
                     
-                    // Парсинг CSV (спрощений)
-                    const rows = csvText.split('\n').map(row => row.split(','));
+                    // Парсинг CSV
+                    // Припускаємо, що формат: A (Ticker), B (Price)
+                    const rows = csvText.split(/\r?\n/).map(row => row.split(','));
                     
-                    // Створюємо мапу цін: { "AAPL": 150.20, "GOOGL": 200.50 }
-                    // Припускаємо, що в Google Sheet колонка A = Тікер, B = Ціна
                     const priceMap = {};
                     rows.forEach(row => {
-                        if (row[0] && row[1]) {
-                            const ticker = row[0].trim().toUpperCase();
-                            const price = parseFloat(row[1].replace(/[^0-9.]/g, ''));
-                            if (!isNaN(price)) priceMap[ticker] = price;
+                        // Очистка від лапок і пробілів
+                        const cleanCell = (cell) => cell ? cell.replace(/['"]+/g, '').trim() : "";
+                        
+                        if (row.length >= 2) {
+                            const ticker = cleanCell(row[0]).toUpperCase();
+                            // Шукаємо ціну, ігноруємо заголовки і пусті рядки
+                            const rawPrice = cleanCell(row[1]);
+                            // Замінюємо кому на крапку (якщо європейський формат) і видаляємо символи валют
+                            const price = parseFloat(rawPrice.replace(/[^0-9.,]/g, '').replace(',', '.'));
+                            
+                            if (ticker && !isNaN(price) && ticker !== "TIKER" && ticker !== "SYMBOL") {
+                                priceMap[ticker] = price;
+                            }
                         }
                     });
 
@@ -111,7 +130,8 @@
                         // Оновлюємо Портфель
                         setPortfolio(prev => prev.map(item => ({
                             ...item,
-                            currPrice: priceMap[item.ticker] || item.currPrice
+                            currPrice: priceMap[item.ticker] || item.currPrice,
+                            // Можна додати індикатор оновлення, якщо ціна змінилась
                         })));
                         
                         // Оновлюємо Watchlist
@@ -121,14 +141,15 @@
                         })));
                         
                         setLastUpdated(new Date());
-                        alert(`Успішно оновлено ${Object.keys(priceMap).length} активів!`);
-                        setIsSettingsOpen(false);
                     } else {
-                        alert("Не вдалося знайти дані у CSV. Перевірте формат (Стовпчик A: Тікер, B: Ціна).");
+                        console.warn("Не знайдено валідних даних у CSV");
+                        setErrorMsg("Формат CSV не розпізнано (очікується: Ticker, Price)");
                     }
                 } catch (error) {
-                    console.error(error);
-                    alert("Помилка завантаження. Перевірте посилання (має бути 'Published to Web' CSV).");
+                    console.error("Fetch Error:", error);
+                    setErrorMsg("Помилка з'єднання з Google Sheets");
+                } finally {
+                    setIsLoading(false);
                 }
             };
 
@@ -138,13 +159,11 @@
                 
                 const asset = {
                     ticker: newAsset.ticker.toUpperCase(),
-                    name: "Новий Актив", // Можна додати поле для імені
+                    name: "Новий Актив", 
                     currPrice: parseFloat(newAsset.price),
                     sector: "Other",
-                    // Для портфеля
                     qty: parseFloat(newAsset.qty) || 0,
-                    avgPrice: parseFloat(newAsset.price), // Припускаємо покупку по поточній
-                    // Для вотчліста
+                    avgPrice: parseFloat(newAsset.price),
                     marketCap: "-",
                     targetPrice: parseFloat(newAsset.price) * 0.9 
                 };
@@ -182,13 +201,18 @@
                                     onClick={() => setIsAddAssetOpen(true)}
                                     className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
                                 >
-                                    <Icon name="plus-circle" size={16} /> Додати Актив
+                                    <Icon name="plus-circle" size={16} /> <span className="hidden sm:inline">Додати</span>
                                 </button>
                                 <button 
-                                    onClick={() => setIsSettingsOpen(true)}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition"
+                                    onClick={() => fetchSheetData(sheetUrl)}
+                                    className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition ${isLoading ? 'bg-slate-100 text-slate-400' : 'text-slate-600 hover:bg-slate-100'}`}
+                                    disabled={isLoading}
                                 >
-                                    <Icon name="link" size={16} /> Data Source
+                                    <Icon name="refresh-cw" size={16} className={isLoading ? "animate-spin" : ""} /> 
+                                    <span className="hidden sm:inline">{isLoading ? "Оновлення..." : "Оновити"}</span>
+                                </button>
+                                <button onClick={() => setIsSettingsOpen(true)} className="p-2 text-slate-400 hover:text-slate-600">
+                                    <Icon name="settings" size={18}/>
                                 </button>
                             </div>
                         </div>
@@ -198,20 +222,24 @@
                         
                         {/* ГОЛОВНИЙ ДАШБОРД */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">
-                            <Card className="bg-gradient-to-br from-blue-600 to-blue-700 text-white border-none">
-                                <div className="flex justify-between items-start mb-4 opacity-80">
-                                    <span className="text-sm font-medium">Поточний баланс</span>
-                                    <Icon name="wallet" />
+                            <Card className="bg-gradient-to-br from-blue-600 to-blue-700 text-white border-none relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-4 opacity-10">
+                                    <Icon name="wallet" size={64} />
                                 </div>
-                                <div className="text-3xl font-bold mb-1">${currentValue.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
-                                <div className="text-blue-100 text-sm">Вкладено: ${totalInvested.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                                <div className="relative z-10">
+                                    <div className="text-blue-100 text-sm font-medium mb-1">Поточний баланс</div>
+                                    <div className="text-3xl font-bold mb-2">${currentValue.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                                    <div className="text-blue-200 text-xs flex items-center gap-1">
+                                        <Icon name="arrow-right" size={12}/> Вкладено: ${totalInvested.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                                    </div>
+                                </div>
                             </Card>
 
                             <Card>
                                 <div className="flex justify-between items-start mb-4">
                                     <span className="text-sm font-medium text-slate-500">P&L (Прибуток)</span>
                                     <div className={`p-2 rounded-lg ${totalProfit >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                                        <Icon name={totalProfit >= 0 ? "arrow-up-right" : "arrow-down-right"} />
+                                        <Icon name={totalProfit >= 0 ? "trending-up" : "trending-down"} />
                                     </div>
                                 </div>
                                 <div className={`text-3xl font-bold mb-1 ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -225,15 +253,22 @@
                             <Card>
                                 <div className="flex justify-between items-start mb-4">
                                     <span className="text-sm font-medium text-slate-500">Статус даних</span>
-                                    <div className="p-2 bg-slate-100 text-slate-600 rounded-lg">
-                                        <Icon name="database" />
+                                    <div className={`p-2 rounded-lg ${lastUpdated ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-600'}`}>
+                                        <Icon name={lastUpdated ? "wifi" : "wifi-off"} />
                                     </div>
                                 </div>
-                                <div className="text-lg font-semibold text-slate-800 mb-1">
-                                    {lastUpdated ? "Live Data" : "Static Data"}
-                                </div>
-                                <div className="text-xs text-slate-400">
-                                    {lastUpdated ? `Оновлено: ${lastUpdated.toLocaleTimeString()}` : "Підключіть Google Sheet для оновлення"}
+                                <div>
+                                    <div className="text-lg font-semibold text-slate-800 mb-1 flex items-center gap-2">
+                                        {lastUpdated ? "Live Data" : "Static Data"}
+                                        {lastUpdated && <span className="relative flex h-2 w-2">
+                                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                        </span>}
+                                    </div>
+                                    <div className="text-xs text-slate-400">
+                                        {lastUpdated ? `Оновлено: ${lastUpdated.toLocaleTimeString()}` : "Очікування даних..."}
+                                        {errorMsg && <span className="text-red-500 block mt-1">{errorMsg}</span>}
+                                    </div>
                                 </div>
                             </Card>
                         </div>
@@ -261,12 +296,12 @@
                                     <thead className="bg-slate-50 text-slate-500 text-xs uppercase">
                                         <tr>
                                             <th className="p-4 font-semibold">Тікер</th>
-                                            <th className="p-4 font-semibold">Сектор</th>
+                                            <th className="p-4 font-semibold hidden sm:table-cell">Сектор</th>
                                             <th className="p-4 font-semibold text-right">К-сть</th>
-                                            <th className="p-4 font-semibold text-right">Сер. Вхід</th>
+                                            <th className="p-4 font-semibold text-right hidden sm:table-cell">Вхід</th>
                                             <th className="p-4 font-semibold text-right">Ціна</th>
-                                            <th className="p-4 font-semibold text-right">Позиція</th>
-                                            <th className="p-4 font-semibold text-right">Прибуток</th>
+                                            <th className="p-4 font-semibold text-right">Вартість</th>
+                                            <th className="p-4 font-semibold text-right">P&L</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100 text-sm">
@@ -281,10 +316,10 @@
                                                         <div className="font-bold text-slate-800">{item.ticker}</div>
                                                         <div className="text-xs text-slate-500">{item.name}</div>
                                                     </td>
-                                                    <td className="p-4"><Badge text={item.sector}/></td>
+                                                    <td className="p-4 hidden sm:table-cell"><Badge text={item.sector}/></td>
                                                     <td className="p-4 text-right text-slate-600">{item.qty}</td>
-                                                    <td className="p-4 text-right text-slate-600">${item.avgPrice.toFixed(2)}</td>
-                                                    <td className="p-4 text-right font-medium text-slate-900">${item.currPrice.toFixed(2)}</td>
+                                                    <td className="p-4 text-right text-slate-600 hidden sm:table-cell">${item.avgPrice.toFixed(2)}</td>
+                                                    <td className="p-4 text-right font-medium text-slate-900 bg-slate-50/50">${item.currPrice.toFixed(2)}</td>
                                                     <td className="p-4 text-right font-bold text-slate-900">${val.toLocaleString(undefined, {maximumFractionDigits: 0})}</td>
                                                     <td className="p-4 text-right">
                                                         <div className={prof >= 0 ? "text-green-600 font-bold" : "text-red-600 font-bold"}>
@@ -305,18 +340,18 @@
                         {/* ТАБЛИЦЯ WATCHLIST */}
                         {view === 'watchlist' && (
                             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden fade-in">
-                                <div className="p-4 bg-yellow-50 border-b border-yellow-100 text-yellow-800 text-sm flex gap-2">
-                                    <Icon name="info" size={18}/>
-                                    <span>Тут акції, які ви аналізуєте для покупки. Ціни оновлюються через Google Sheet.</span>
+                                <div className="p-4 bg-yellow-50 border-b border-yellow-100 text-yellow-800 text-xs flex gap-2">
+                                    <Icon name="info" size={16}/>
+                                    <span>Ціни оновлюються автоматично з вашого Google Sheet.</span>
                                 </div>
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-slate-50 text-slate-500 text-xs uppercase">
                                         <tr>
                                             <th className="p-4 font-semibold">Тікер</th>
-                                            <th className="p-4 font-semibold">Сектор</th>
+                                            <th className="p-4 font-semibold hidden sm:table-cell">Сектор</th>
                                             <th className="p-4 font-semibold text-right">Ціна</th>
-                                            <th className="p-4 font-semibold text-right">Цільова ціна</th>
-                                            <th className="p-4 font-semibold text-right">Капіталізація</th>
+                                            <th className="p-4 font-semibold text-right hidden sm:table-cell">Цільова ціна</th>
+                                            <th className="p-4 font-semibold text-right hidden sm:table-cell">Капіталізація</th>
                                             <th className="p-4 font-semibold text-right">Дія</th>
                                         </tr>
                                     </thead>
@@ -327,12 +362,12 @@
                                                     <div className="font-bold text-slate-800">{item.ticker}</div>
                                                     <div className="text-xs text-slate-500">{item.name}</div>
                                                 </td>
-                                                <td className="p-4"><Badge text={item.sector}/></td>
-                                                <td className="p-4 text-right font-bold text-slate-900">${item.currPrice.toFixed(2)}</td>
-                                                <td className="p-4 text-right text-slate-600">${item.targetPrice.toFixed(2)}</td>
-                                                <td className="p-4 text-right text-slate-600">{item.marketCap}</td>
+                                                <td className="p-4 hidden sm:table-cell"><Badge text={item.sector}/></td>
+                                                <td className="p-4 text-right font-bold text-slate-900 bg-slate-50/50">${item.currPrice.toFixed(2)}</td>
+                                                <td className="p-4 text-right text-slate-600 hidden sm:table-cell">${item.targetPrice.toFixed(2)}</td>
+                                                <td className="p-4 text-right text-slate-600 hidden sm:table-cell">{item.marketCap}</td>
                                                 <td className="p-4 text-right">
-                                                    <button className="text-blue-600 hover:underline text-xs font-medium">Аналіз</button>
+                                                    <button className="text-blue-600 hover:underline text-xs font-medium bg-blue-50 px-2 py-1 rounded">Аналіз</button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -348,27 +383,27 @@
                         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 fade-in">
                             <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-lg font-bold text-slate-800">Підключення Live Даних</h3>
+                                    <h3 className="text-lg font-bold text-slate-800">Джерело даних</h3>
                                     <button onClick={() => setIsSettingsOpen(false)} className="text-slate-400 hover:text-slate-600"><Icon name="x"/></button>
                                 </div>
                                 <p className="text-sm text-slate-600 mb-4">
-                                    Щоб отримати актуальні ціни, створіть Google Sheet з колонками: 
-                                    <br/><code className="bg-slate-100 p-1 rounded text-xs">A: Ticker (GOOGL)</code>, <code className="bg-slate-100 p-1 rounded text-xs">B: Price (=GOOGLEFINANCE("GOOGL"))</code>.
-                                    <br/>Далі: File -> Share -> Publish to web (CSV).
+                                    Посилання на ваш Google Sheet (CSV):
                                 </p>
                                 <input 
                                     type="text" 
-                                    className="w-full border border-slate-300 rounded-lg p-3 text-sm mb-4 focus:ring-2 focus:ring-blue-500 outline-none"
-                                    placeholder="Вставте посилання на CSV тут..."
+                                    className="w-full border border-slate-300 rounded-lg p-3 text-sm mb-4 focus:ring-2 focus:ring-blue-500 outline-none text-slate-600 bg-slate-50"
                                     value={sheetUrl}
                                     onChange={(e) => setSheetUrl(e.target.value)}
                                 />
-                                <button 
-                                    onClick={fetchSheetData}
-                                    className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition flex justify-center gap-2"
-                                >
-                                    <Icon name="refresh-cw" size={18}/> Завантажити дані
-                                </button>
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={() => fetchSheetData(sheetUrl)}
+                                        className="flex-1 bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition"
+                                    >
+                                        Оновити зараз
+                                    </button>
+                                    <button onClick={() => setIsSettingsOpen(false)} className="px-4 py-2 border rounded-lg hover:bg-slate-50 text-slate-600">Закрити</button>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -392,20 +427,20 @@
                                     </div>
                                     <div>
                                         <label className="block text-xs font-medium text-slate-500 mb-1">Тікер (напр. AAPL)</label>
-                                        <input type="text" className="w-full border p-2 rounded-lg text-sm" value={newAsset.ticker} onChange={e => setNewAsset({...newAsset, ticker: e.target.value})} />
+                                        <input type="text" className="w-full border p-2 rounded-lg text-sm uppercase" value={newAsset.ticker} onChange={e => setNewAsset({...newAsset, ticker: e.target.value})} placeholder="AAPL" />
                                     </div>
                                     {newAsset.type === 'portfolio' && (
                                         <div>
                                             <label className="block text-xs font-medium text-slate-500 mb-1">Кількість</label>
-                                            <input type="number" className="w-full border p-2 rounded-lg text-sm" value={newAsset.qty} onChange={e => setNewAsset({...newAsset, qty: e.target.value})} />
+                                            <input type="number" className="w-full border p-2 rounded-lg text-sm" value={newAsset.qty} onChange={e => setNewAsset({...newAsset, qty: e.target.value})} placeholder="10" />
                                         </div>
                                     )}
                                     <div>
                                         <label className="block text-xs font-medium text-slate-500 mb-1">Ціна (Поточна/Входу)</label>
-                                        <input type="number" className="w-full border p-2 rounded-lg text-sm" value={newAsset.price} onChange={e => setNewAsset({...newAsset, price: e.target.value})} />
+                                        <input type="number" className="w-full border p-2 rounded-lg text-sm" value={newAsset.price} onChange={e => setNewAsset({...newAsset, price: e.target.value})} placeholder="150.00" />
                                     </div>
                                     
-                                    <button onClick={handleAddAsset} className="w-full bg-slate-900 text-white py-2 rounded-lg text-sm font-medium mt-2">Зберегти</button>
+                                    <button onClick={handleAddAsset} className="w-full bg-slate-900 text-white py-2 rounded-lg text-sm font-medium mt-2 hover:bg-slate-800 transition">Зберегти</button>
                                 </div>
                             </div>
                         </div>
