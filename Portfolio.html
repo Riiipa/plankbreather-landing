@@ -80,7 +80,7 @@
             const [view, setView] = useState("portfolio"); 
             const [portfolio, setPortfolio] = useState(INITIAL_PORTFOLIO);
             const [watchlist, setWatchlist] = useState(INITIAL_WATCHLIST);
-            const [sheetUrl, setSheetUrl] = useState(USER_SHEET_URL); // Встановлено за замовчуванням
+            const [sheetUrl, setSheetUrl] = useState(USER_SHEET_URL); 
             const [lastUpdated, setLastUpdated] = useState(null);
             const [isLoading, setIsLoading] = useState(false);
             const [errorMsg, setErrorMsg] = useState("");
@@ -89,14 +89,13 @@
             
             const [newAsset, setNewAsset] = useState({ ticker: "", qty: "", price: "", type: "portfolio" });
 
-            // --- АВТОМАТИЧНЕ ЗАВАНТАЖЕННЯ ПРИ СТАРТІ ---
             useEffect(() => {
                 if (sheetUrl) {
                     fetchSheetData(sheetUrl);
                 }
             }, []);
 
-            // --- ЛОГІКА ОНОВЛЕННЯ ДАНИХ ---
+            // --- ПОКРАЩЕНА ЛОГІКА ОНОВЛЕННЯ ДАНИХ ---
             const fetchSheetData = async (urlToFetch) => {
                 setIsLoading(true);
                 setErrorMsg("");
@@ -104,34 +103,75 @@
                     const response = await fetch(urlToFetch);
                     const csvText = await response.text();
                     
-                    // Парсинг CSV
-                    // Припускаємо, що формат: A (Ticker), B (Price)
-                    const rows = csvText.split(/\r?\n/).map(row => row.split(','));
+                    // 1. Визначаємо роздільник (кома чи крапка з комою)
+                    // Беремо перший рядок і дивимось, чого більше
+                    const firstLine = csvText.split('\n')[0];
+                    const separator = (firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length ? ';' : ',';
                     
-                    const priceMap = {};
-                    rows.forEach(row => {
-                        // Очистка від лапок і пробілів
-                        const cleanCell = (cell) => cell ? cell.replace(/['"]+/g, '').trim() : "";
-                        
-                        if (row.length >= 2) {
-                            const ticker = cleanCell(row[0]).toUpperCase();
-                            // Шукаємо ціну, ігноруємо заголовки і пусті рядки
-                            const rawPrice = cleanCell(row[1]);
-                            // Замінюємо кому на крапку (якщо європейський формат) і видаляємо символи валют
-                            const price = parseFloat(rawPrice.replace(/[^0-9.,]/g, '').replace(',', '.'));
-                            
-                            if (ticker && !isNaN(price) && ticker !== "TIKER" && ticker !== "SYMBOL") {
-                                priceMap[ticker] = price;
-                            }
+                    // 2. Парсимо CSV
+                    const rows = csvText.split(/\r?\n/).map(row => {
+                        // Цей regex коректно обробляє коми всередині лапок: "1,234.50"
+                        if (separator === ',') {
+                             return row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
                         }
+                        return row.split(';');
                     });
+                    
+                    if (rows.length < 2) throw new Error("Порожній файл");
+
+                    // 3. Шукаємо індекси стовпчиків за назвами
+                    const header = rows[0].map(h => h ? h.replace(/['"]+/g, '').trim().toLowerCase() : "");
+                    
+                    // Можливі назви для тікера
+                    const tickerIndex = header.findIndex(h => h === "ticker" || h === "tiker" || h === "symbol" || h === "тикер");
+                    // Можливі назви для ціни
+                    const priceIndex = header.findIndex(h => h === "price" || h === "current price" || h === "last" || h.includes("price") || h === "цена");
+
+                    if (tickerIndex === -1 || priceIndex === -1) {
+                        // Якщо заголовки не знайдено, пробуємо дефолтні A (0) і B (1) або інші, де є схожі на ціну дані
+                        console.warn("Заголовки не знайдено, використовуються стовпчики 0 та 1");
+                    }
+
+                    const tIdx = tickerIndex !== -1 ? tickerIndex : 0;
+                    const pIdx = priceIndex !== -1 ? priceIndex : 1; // За замовчуванням беремо 2-й стовпчик як ціну
+
+                    const priceMap = {};
+                    
+                    // Проходимо по рядках (починаючи з 1-го, якщо є заголовки)
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (row.length <= Math.max(tIdx, pIdx)) continue;
+
+                        let ticker = row[tIdx] ? row[tIdx].replace(/['"]+/g, '').trim().toUpperCase() : "";
+                        let rawPrice = row[pIdx] ? row[pIdx].replace(/['"]+/g, '').trim() : "";
+
+                        // Очистка ціни від валют ($, €) і пробілів
+                        // Якщо формат 1.234,56 (євро), міняємо на 1234.56
+                        if (rawPrice.includes(',') && rawPrice.includes('.')) {
+                             // Складний випадок, припускаємо US формат (1,234.56) -> видаляємо коми
+                             if (rawPrice.indexOf(',') < rawPrice.indexOf('.')) {
+                                 rawPrice = rawPrice.replace(/,/g, '');
+                             } else {
+                                 // EU формат (1.234,56) -> видаляємо крапки, міняємо кому на крапку
+                                 rawPrice = rawPrice.replace(/\./g, '').replace(',', '.');
+                             }
+                        } else if (rawPrice.includes(',')) {
+                            // Тільки кома -> ймовірно десятковий роздільник (EU)
+                            rawPrice = rawPrice.replace(',', '.');
+                        }
+                        
+                        const price = parseFloat(rawPrice.replace(/[^0-9.]/g, ''));
+
+                        if (ticker && !isNaN(price)) {
+                            priceMap[ticker] = price;
+                        }
+                    }
 
                     if (Object.keys(priceMap).length > 0) {
                         // Оновлюємо Портфель
                         setPortfolio(prev => prev.map(item => ({
                             ...item,
-                            currPrice: priceMap[item.ticker] || item.currPrice,
-                            // Можна додати індикатор оновлення, якщо ціна змінилась
+                            currPrice: priceMap[item.ticker] || item.currPrice
                         })));
                         
                         // Оновлюємо Watchlist
@@ -142,12 +182,11 @@
                         
                         setLastUpdated(new Date());
                     } else {
-                        console.warn("Не знайдено валідних даних у CSV");
-                        setErrorMsg("Формат CSV не розпізнано (очікується: Ticker, Price)");
+                        setErrorMsg(`Дані не знайдено. Перевірте стовпчики. Знайдено: ${header.join(', ')}`);
                     }
                 } catch (error) {
                     console.error("Fetch Error:", error);
-                    setErrorMsg("Помилка з'єднання з Google Sheets");
+                    setErrorMsg("Помилка завантаження. Переконайтеся, що файл опубліковано як CSV.");
                 } finally {
                     setIsLoading(false);
                 }
