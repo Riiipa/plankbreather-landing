@@ -82,8 +82,8 @@
                 rpStrategySimpleDesc: "Живете в своїй, але без інвестицій",
                 rpStrategy: "Для Себе (PRO)",
                 rpDescription: "Квартира + Акції (весь залишок)",
-                justInvest: "Чистий Інвестор", // NEW
-                justInvestDesc: "Оренда + 400€/міс в акції", // NEW
+                justInvest: "Оренда + Акції", // NEW Title
+                justInvestDesc: "Стабільна закупка на", // NEW Desc
                 currentRentLabel: "Поточна оренда (€)",
                 investBudgetLabel: "Бюджет інвестицій (€)", 
                 assetValue: "Вартість активу",
@@ -156,8 +156,8 @@
                 rpStrategySimpleDesc: "Живете в своей, но без инвестиций",
                 rpStrategy: "Для Себя (PRO)",
                 rpDescription: "Квартира + Акции (весь остаток)",
-                justInvest: "Чистый Инвестор", // NEW
-                justInvestDesc: "Аренда + 400€/мес в акции", // NEW
+                justInvest: "Аренда + Акции", // NEW Title
+                justInvestDesc: "Стабильная закупка на", // NEW Desc
                 currentRentLabel: "Текущая аренда (€)",
                 investBudgetLabel: "Бюджет инвестиций (€)", 
                 assetValue: "Стоимость актива",
@@ -552,7 +552,7 @@
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
                                         <span className="text-indigo-200 text-[10px] sm:text-xs font-semibold uppercase tracking-wider block mb-1">{t.justInvest}</span>
                                         <span className="text-white text-xs sm:text-sm font-bold">{simulation.finalJustInvestValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
-                                        <span className="text-[9px] text-indigo-400 block mt-1 leading-tight">{t.justInvestDesc}</span>
+                                        <span className="text-[9px] text-indigo-400 block mt-1 leading-tight">{t.justInvestDesc} {investmentBudget}€</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-pink-500 rounded-t-lg relative transition-all duration-500 hover:bg-pink-400" 
