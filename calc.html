@@ -30,7 +30,7 @@
         const TRANSLATIONS = {
             ua: {
                 title: "Калькулятор Інвестора (LMNP)",
-                subtitle: "Симуляція: Нерухомість vs Акції",
+                subtitle: "Симуляція: Нерухомість vs Акції vs Власне житло",
                 projectCost: "Вартість Проекту",
                 priceLabel: "Ціна квартири (€)",
                 worksLabel: "Ремонт/Меблі (€)",
@@ -43,14 +43,14 @@
                 insuranceLabel: "Страховка %",
                 monthlyPaymentLabel: "Кредитний платіж:",
                 operations: "Операційна діяльність",
-                rentLabel: "Оренда (на місяць)",
-                rentIndexLabel: "Індексація оренди (%/рік)", // NEW
+                rentLabel: "Оренда (ринкова) (€/міс)",
+                rentIndexLabel: "Індексація оренди (%/рік)",
                 chargesLabel: "Комунальні (Charges)",
                 taxLabel: "Taxe Foncière (рік)",
                 otherLabel: "Інше (PNO/Бух) рік",
                 monthlyCashFlow: "Щомісячний Cash Flow",
                 month: "міс",
-                negativeFlowMsg: "Це ваша доплата в перший рік (далі менше).", // Changed
+                negativeFlowMsg: "Це ваша доплата в перший рік (далі менше).",
                 positiveFlowMsg: "Вітаємо! Квартира окупає себе сама.",
                 whereMoneyGoes: "Куди йдуть гроші (1-й рік)",
                 incomeRent: "Оренда (Дохід)",
@@ -66,7 +66,7 @@
                 tenant: "Орендар",
                 you: "Ви",
                 paidByTenant: "Оплачено Орендарем",
-                paidByTenantDesc: "З урахуванням щорічної індексації.", // Changed
+                paidByTenantDesc: "З урахуванням щорічної індексації.",
                 paidByYou: "Оплачено Вами",
                 paidByYouDesc: "Ваш внесок + всі щомісячні доплати.",
                 bankInterest: "Переплата банку",
@@ -76,16 +76,19 @@
                 battleSubtitle: "Альтернатива:",
                 investInStocks: "в акції",
                 totalInvested: "Всього вкладено:", 
-                realEstate: "Нерухомість",
-                stocks: "Акції",
-                assetValue: "Вартість активу (+2%/рік)",
+                realEstate: "Інвест. Квартира",
+                stocks: "Акції (S&P/Tech)",
+                rpStrategy: "Для Себе (RP)",
+                rpDescription: "Квартира + Акції (з економії оренди)",
+                currentRentLabel: "Ваша поточна оренда (€)",
+                assetValue: "Вартість активу",
                 atRate: "При",
                 annual: "% річних",
                 conservative: "(консервативно)"
             },
             ru: {
                 title: "Калькулятор Инвестора (LMNP)",
-                subtitle: "Симуляция: Недвижимость vs Акции",
+                subtitle: "Симуляция: Недвижимость vs Акции vs Жилье для себя",
                 projectCost: "Стоимость Проекта",
                 priceLabel: "Цена квартиры (€)",
                 worksLabel: "Ремонт/Мебель (€)",
@@ -98,14 +101,14 @@
                 insuranceLabel: "Страховка %",
                 monthlyPaymentLabel: "Кредитный платеж:",
                 operations: "Операционная деятельность",
-                rentLabel: "Аренда (в месяц)",
-                rentIndexLabel: "Индексация аренды (%/год)", // NEW
+                rentLabel: "Аренда (рыночная) (€/мес)",
+                rentIndexLabel: "Индексация аренды (%/год)",
                 chargesLabel: "Коммунальные (Charges)",
                 taxLabel: "Taxe Foncière (год)",
                 otherLabel: "Другое (PNO/Бух) год",
                 monthlyCashFlow: "Ежемесячный Cash Flow",
                 month: "мес",
-                negativeFlowMsg: "Это ваша доплата в первый год (далее меньше).", // Changed
+                negativeFlowMsg: "Это ваша доплата в первый год (далее меньше).",
                 positiveFlowMsg: "Поздравляем! Квартира окупает себя сама.",
                 whereMoneyGoes: "Куда уходят деньги (1-й год)",
                 incomeRent: "Аренда (Доход)",
@@ -121,7 +124,7 @@
                 tenant: "Арендатор",
                 you: "Вы",
                 paidByTenant: "Оплачено Арендатором",
-                paidByTenantDesc: "С учетом ежегодной индексации.", // Changed
+                paidByTenantDesc: "С учетом ежегодной индексации.",
                 paidByYou: "Оплачено Вами",
                 paidByYouDesc: "Ваш взнос + все ежемесячные доплаты.",
                 bankInterest: "Переплата банку",
@@ -131,9 +134,12 @@
                 battleSubtitle: "Альтернатива:",
                 investInStocks: "в акции",
                 totalInvested: "Всего вложено:", 
-                realEstate: "Недвижимость",
-                stocks: "Акции",
-                assetValue: "Стоимость актива (+2%/год)",
+                realEstate: "Инвест. Квартира",
+                stocks: "Акции (S&P/Tech)",
+                rpStrategy: "Для Себя (RP)",
+                rpDescription: "Квартира + Акции (с экономии аренды)",
+                currentRentLabel: "Ваша текущая аренда (€)",
+                assetValue: "Стоимость актива",
                 atRate: "При",
                 annual: "% годовых",
                 conservative: "(консервативно)"
@@ -146,7 +152,7 @@
                 {children}
             </svg>
         );
-
+        // ... Icons same as before ...
         const Home = (props) => <IconWrapper {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></IconWrapper>;
         const Calculator = (props) => <IconWrapper {...props}><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></IconWrapper>;
         const Euro = (props) => <IconWrapper {...props}><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/></IconWrapper>;
@@ -161,8 +167,7 @@
 
         // --- ГОЛОВНИЙ КОМПОНЕНТ ---
         const RealEstateCalculator = () => {
-            // Мова (State)
-            const [lang, setLang] = useState('ua'); // 'ua' або 'ru'
+            const [lang, setLang] = useState('ua'); 
             const t = TRANSLATIONS[lang];
 
             // --- STATE: Вхідні дані ---
@@ -176,12 +181,14 @@
             const [insuranceRate, setInsuranceRate] = useState(0.35); 
 
             const [rent, setRent] = useState(750); 
-            const [rentIndexation, setRentIndexation] = useState(2.0); // NEW: 2% щорічно
+            const [rentIndexation, setRentIndexation] = useState(2.0);
             const [chargesCopro, setChargesCopro] = useState(70); 
             const [taxeFonciere, setTaxeFonciere] = useState(600); 
-            
             const [otherExpenses, setOtherExpenses] = useState(400); 
             const [vacancyRate, setVacancyRate] = useState(5); 
+
+            // NEW: Поточна оренда для порівняння RP
+            const [currentRent, setCurrentRent] = useState(1250);
 
             const [sp500Rate, setSp500Rate] = useState(8); 
             const [techRate, setTechRate] = useState(12); 
@@ -191,7 +198,7 @@
             const totalProjectCost = price + works + notaryFees;
             const loanAmount = totalProjectCost - contribution;
 
-            // Кредит (ануїтет)
+            // Кредит
             const monthlyRate = rate / 100 / 12;
             const numberOfPayments = duration * 12;
             const monthlyMortgage = loanAmount > 0 
@@ -200,7 +207,7 @@
             const monthlyInsurance = (loanAmount * (insuranceRate / 100)) / 12;
             const totalMonthlyLoan = monthlyMortgage + monthlyInsurance;
 
-            // Витрати щомісячні (Статичні для 1-го місяця)
+            // Витрати щомісячні
             const monthlyTaxeFonciere = taxeFonciere / 12;
             const monthlyOtherExpenses = otherExpenses / 12;
             const monthlyVacancy = rent * (vacancyRate / 100);
@@ -210,65 +217,68 @@
             const initialCashFlow = rent - totalOutflow;
             const grossYield = (rent * 12 / totalProjectCost) * 100;
 
-            // --- СКЛАДНІ РОЗРАХУНКИ (LIFETIME SIMULATION) ---
-            // Ми моделюємо кожен рік, щоб врахувати індексацію оренди
-            
+            // --- SIMULATION ---
             const simulation = useMemo(() => {
                 let totalTenantPaid = 0;
-                let totalInvestorPaid = 0; // Тільки "мінус" (доплати)
-                let totalRealEstateSurplus = 0; // "Плюс" (коли оренда > витрат)
+                let totalInvestorPaid = 0; 
+                let totalRealEstateSurplus = 0; 
                 
-                // Для альтернативних інвестицій
                 let sp500Balance = contribution;
                 let techBalance = contribution;
+                let rpStockBalance = contribution; // Портфель для стратегії RP
+
                 let totalInvestedPrincipal = contribution;
 
+                // Витрати без vacancy для RP розрахунку (бо там немає пустою)
+                // Але користувач просив "Total Expenses" з розрахунку, що включає все.
+                // Використаємо totalMonthlyExpenses як "Total Expenses" (включно з vacancy/others).
                 const monthlyExpFixed = chargesCopro + monthlyTaxeFonciere + monthlyOtherExpenses + managementFee;
-                // Примітка: Витрати теж можуть рости (інфляція). Для простоти залишимо їх фіксованими або можна додати інфляцію витрат.
-                // В даній моделі фіксуємо витрати, щоб показати ефект росту оренди.
                 
                 for (let year = 0; year < duration; year++) {
-                    // Оренда в цьому році
                     const currentMonthlyRent = rent * Math.pow(1 + rentIndexation/100, year);
                     const currentMonthlyVacancy = currentMonthlyRent * (vacancyRate / 100);
-                    
-                    // Реальні гроші від орендаря (Net Rent)
                     const netMonthlyRent = currentMonthlyRent - currentMonthlyVacancy;
                     
-                    // Cash Flow місяця
+                    // 1. INVESTMENT FLAT LOGIC
                     const monthlyCF = netMonthlyRent - monthlyExpFixed - totalMonthlyLoan;
-                    
-                    // Накопичення за рік
                     totalTenantPaid += netMonthlyRent * 12;
                     
                     if (monthlyCF < 0) {
-                        // Інвестор доплачує
                         totalInvestorPaid += Math.abs(monthlyCF) * 12;
                         totalInvestedPrincipal += Math.abs(monthlyCF) * 12;
                         
-                        // В альтернативному сценарії ми інвестуємо цю ж суму
                         const monthlyInvestment = Math.abs(monthlyCF);
-                        // Нарахування % на портфель за рік + нові внески
-                        sp500Balance = sp500Balance * (1 + sp500Rate/100) + (monthlyInvestment * 12); // спрощено (річне нарахування)
+                        sp500Balance = sp500Balance * (1 + sp500Rate/100) + (monthlyInvestment * 12);
                         techBalance = techBalance * (1 + techRate/100) + (monthlyInvestment * 12);
                     } else {
-                        // Квартира приносить прибуток
                         totalRealEstateSurplus += monthlyCF * 12;
-                        
-                        // В альтернативному сценарії ми більше НЕ докладаємо грошей (бо квартира не просить їсти)
-                        // Портфель просто росте на %
                         sp500Balance = sp500Balance * (1 + sp500Rate/100);
                         techBalance = techBalance * (1 + techRate/100);
                     }
+
+                    // 2. RP (RESIDENCE PRINCIPALE) LOGIC
+                    // User Formula: 1250 (Current Rent) - "Total Expenses" + "Rent Income"
+                    // "Total Expenses" = totalOutflow (Loan + all monthly expenses)
+                    // "Rent Income" = currentMonthlyRent (Market rent that grows)
+                    
+                    // Оновлюємо Total Expenses (Vacancy росте з орендою у формулі totalOutflow)
+                    // totalOutflow = Loan + FixedExp + Vacancy(Variable)
+                    const currentTotalOutflow = totalMonthlyLoan + monthlyExpFixed + currentMonthlyVacancy;
+
+                    const monthlyInvestRP = currentRent - currentTotalOutflow + currentMonthlyRent;
+                    
+                    // Накопичуємо в акції Tech (як просив користувач "з мого портфелю")
+                    if (monthlyInvestRP > 0) {
+                        rpStockBalance = rpStockBalance * (1 + techRate/100) + (monthlyInvestRP * 12);
+                    } else {
+                        rpStockBalance = rpStockBalance * (1 + techRate/100); // Якщо мінус, нічого не інвестуємо (або віднімаємо, але це рідко)
+                    }
                 }
 
-                // Додаємо початковий внесок до витрат інвестора
                 const totalInvestorCost = contribution + totalInvestorPaid;
-                
-                // Фінальна вартість квартири (+2% в рік)
                 const finalPropertyPrice = price * Math.pow(1.02, duration);
-                // Загальний капітал у нерухомості = Вартість стін + Накопичений прибуток (Surplus)
                 const finalRealEstateValue = finalPropertyPrice + totalRealEstateSurplus;
+                const finalRPValue = finalPropertyPrice + rpStockBalance; // Квартира + Накопичені акції
 
                 return {
                     totalTenantPaid,
@@ -276,16 +286,20 @@
                     totalInvestedPrincipal,
                     finalRealEstateValue,
                     finalSP500Value: sp500Balance,
-                    finalTechValue: techBalance
+                    finalTechValue: techBalance,
+                    finalRPValue
                 };
 
-            }, [price, rent, rentIndexation, duration, contribution, totalMonthlyLoan, chargesCopro, monthlyTaxeFonciere, monthlyOtherExpenses, vacancyRate, sp500Rate, techRate]);
+            }, [price, rent, rentIndexation, duration, contribution, totalMonthlyLoan, chargesCopro, monthlyTaxeFonciere, monthlyOtherExpenses, vacancyRate, sp500Rate, techRate, currentRent]);
 
             const percentTenant = Math.min(100, Math.max(0, (simulation.totalTenantPaid / (simulation.totalTenantPaid + simulation.totalInvestorPaid)) * 100));
             const percentInvestor = 100 - percentTenant;
 
             const totalLoanRepayment = totalMonthlyLoan * duration * 12;
             const costOfCredit = totalLoanRepayment - loanAmount;
+
+            // Знайдемо максимум для масштабування графіка (додавши RP)
+            const maxValue = Math.max(simulation.finalRealEstateValue, simulation.finalSP500Value, simulation.finalTechValue, simulation.finalRPValue);
 
             return (
                 <div className="max-w-4xl mx-auto p-4 bg-gray-50 rounded-xl font-sans text-gray-800 shadow-xl">
@@ -404,24 +418,24 @@
                                     </span>
                                 </p>
                             </div>
-                            <div className="flex gap-4 text-xs">
+                            <div className="flex gap-4 items-end text-xs">
                                 <div><label className="text-indigo-300 block mb-1">S&P500 %</label><input type="number" value={sp500Rate} onChange={e => setSp500Rate(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-20 text-center"/></div>
                                 <div><label className="text-indigo-300 block mb-1">Tech %</label><input type="number" value={techRate} onChange={e => setTechRate(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-20 text-center"/></div>
+                                <div><label className="text-indigo-300 block mb-1">{t.currentRentLabel}</label><input type="number" value={currentRent} onChange={e => setCurrentRent(Number(e.target.value))} className="bg-indigo-950 text-white border border-indigo-700 rounded p-1 w-24 text-center"/></div>
                             </div>
                         </div>
                         
                         <div className="p-8">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end h-72">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end h-72">
                                 {/* НЕРУХОМІСТЬ */}
                                 <div className="flex flex-col justify-end h-full group">
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
-                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.realEstate}</span>
-                                        <span className="text-white text-2xl font-bold">{simulation.finalRealEstateValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
-                                        <span className="text-xs text-indigo-400 block">{t.assetValue}</span>
+                                        <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">{t.realEstate}</span>
+                                        <span className="text-white text-lg font-bold">{simulation.finalRealEstateValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-blue-600 rounded-t-lg relative transition-all duration-500 hover:bg-blue-500" 
-                                             style={{height: `${(simulation.finalRealEstateValue / Math.max(simulation.finalRealEstateValue, simulation.finalSP500Value, simulation.finalTechValue)) * 100}%`}}>
+                                             style={{height: `${(simulation.finalRealEstateValue / maxValue) * 100}%`}}>
                                         </div>
                                     </div>
                                 </div>
@@ -429,13 +443,12 @@
                                 {/* S&P 500 */}
                                 <div className="flex flex-col justify-end h-full group">
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
-                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">S&P 500</span>
-                                        <span className="text-white text-2xl font-bold">{simulation.finalSP500Value.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
-                                        <span className="text-xs text-indigo-400 block">{t.atRate} {sp500Rate}{t.annual}</span>
+                                        <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">S&P 500</span>
+                                        <span className="text-white text-lg font-bold">{simulation.finalSP500Value.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-yellow-500 rounded-t-lg relative transition-all duration-500 hover:bg-yellow-400" 
-                                             style={{height: `${(simulation.finalSP500Value / Math.max(simulation.finalRealEstateValue, simulation.finalSP500Value, simulation.finalTechValue)) * 100}%`}}>
+                                             style={{height: `${(simulation.finalSP500Value / maxValue) * 100}%`}}>
                                         </div>
                                     </div>
                                 </div>
@@ -443,16 +456,30 @@
                                 {/* TECH */}
                                 <div className="flex flex-col justify-end h-full group">
                                     <div className="text-center mb-2 flex-grow flex flex-col justify-end">
-                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.stocks}</span>
-                                        <span className="text-white text-2xl font-bold">{simulation.finalTechValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
-                                        <span className="text-xs text-indigo-400 block">{t.atRate} {techRate}{t.annual} {t.conservative}</span>
+                                        <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">{t.stocks}</span>
+                                        <span className="text-white text-lg font-bold">{simulation.finalTechValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
                                     </div>
                                     <div className="h-48 w-full flex items-end">
                                         <div className="w-full bg-purple-600 rounded-t-lg relative transition-all duration-500 hover:bg-purple-500" 
-                                             style={{height: `${(simulation.finalTechValue / Math.max(simulation.finalRealEstateValue, simulation.finalSP500Value, simulation.finalTechValue)) * 100}%`}}>
+                                             style={{height: `${(simulation.finalTechValue / maxValue) * 100}%`}}>
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* RP (FOR SELF) */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-2 flex-grow flex flex-col justify-end">
+                                        <span className="text-indigo-200 text-xs font-semibold uppercase tracking-wider block mb-1">{t.rpStrategy}</span>
+                                        <span className="text-white text-lg font-bold">{simulation.finalRPValue.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                        <span className="text-xs text-indigo-400 block mt-1 leading-tight">{t.rpDescription}</span>
+                                    </div>
+                                    <div className="h-48 w-full flex items-end">
+                                        <div className="w-full bg-green-500 rounded-t-lg relative transition-all duration-500 hover:bg-green-400" 
+                                             style={{height: `${(simulation.finalRPValue / maxValue) * 100}%`}}>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
