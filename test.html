@@ -13,14 +13,15 @@
             background-color: #f3f4f6;
             color: #1a1a1a;
         }
-        
+
         .a4-page {
             width: 210mm;
             min-height: 297mm;
             background: white;
             margin: 40px auto;
             padding: 40px 50px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
             display: flex;
             gap: 40px;
         }
@@ -45,186 +46,196 @@
 </head>
 <body>
 
-    <!-- Toolbar -->
-    <div class="no-print fixed top-5 right-5 z-50">
-        <button onclick="window.print()" class="bg-gray-900 text-white px-6 py-2 rounded-md shadow hover:bg-gray-700 transition font-medium text-sm flex items-center gap-2">
-            <i class="fas fa-print"></i> Save as PDF
-        </button>
-    </div>
+<!-- Toolbar -->
+<div class="no-print fixed top-5 right-5 z-50">
+    <button onclick="window.print()"
+        class="bg-gray-900 text-white px-6 py-2 rounded-md shadow hover:bg-gray-700 transition font-medium text-sm flex items-center gap-2">
+        <i class="fas fa-print"></i> Save as PDF
+    </button>
+</div>
 
-    <!-- Resume Content -->
-    <div class="a4-page" contenteditable="true" spellcheck="false">
-        
-        <!-- LEFT COLUMN (Metadata + Header) - Width approx 30% -->
-        <div class="w-[30%] flex flex-col gap-6 border-r border-gray-200 pr-6 pt-2">
-            
-            <!-- HEADER -->
-            <div class="mb-2">
-                <h1 class="text-4xl font-bold text-gray-900 tracking-tight leading-none uppercase">
-                    <div>Dmytro</div>
-                    <div class="font-black">Ripa</div> <!-- Bolder Surname -->
-                </h1>
-                <p class="text-[10px] text-gray-500 mt-4 font-bold uppercase tracking-widest leading-relaxed">
-                    Senior Architectural<br>Visualizer
-                </p>
-            </div>
+<!-- Resume Content -->
+<div class="a4-page" contenteditable="true" spellcheck="false">
 
-            <!-- Contact Info -->
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Contact</h3>
-                <div class="text-xs space-y-3 font-medium text-gray-800">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] text-gray-500 font-normal">Location</span>
-                        <span>Paris, France</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[10px] text-gray-500 font-normal">Phone</span>
-                        <span>+33 7 58 16 83 57</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[10px] text-gray-500 font-normal">Email</span>
-                        <a href="mailto:ripa.dm@gmail.com" class="hover:underline">ripa.dm@gmail.com</a>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[10px] text-gray-500 font-normal">Portfolio</span>
-                        <a href="http://ripa.myportfolio.com" class="hover:underline text-blue-700 break-words">ripa.myportfolio.com</a>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-[10px] text-gray-500 font-normal">Website</span>
-                        <a href="https://ri-pa.com" class="hover:underline text-blue-700 break-words">ri-pa.com</a>
-                    </div>
-                </div>
-            </div>
+    <!-- LEFT COLUMN -->
+    <div class="w-[30%] flex flex-col gap-6 border-r border-gray-200 pr-6 pt-2">
 
-            <!-- Nationality / Status -->
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Nationality & Status</h3>
-                <p class="text-xs font-medium text-gray-800">Ukrainian</p>
-                <p class="text-[10px] text-gray-500 mt-1 leading-tight">EU Temporary Protection (Work Authorized)</p>
-            </div>
-
-            <!-- Skills -->
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Technical Skills</h3>
-                <div class="space-y-3">
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-500 mb-1">Primary Tools</p>
-                        <p class="text-xs text-gray-800 leading-relaxed">
-                            3ds Max, Corona Renderer, V-Ray, RailClone, Forest Pack, Adobe Photoshop, Adobe Lightroom, StableDiffusion, MagnificAI
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-500 mb-1">Additional</p>
-                        <p class="text-xs text-gray-800 leading-relaxed">
-                            Archicad, AutoCAD, Cinema 4D, Adobe Premiere Pro
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Languages -->
-            <div>
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Languages</h3>
-                <ul class="text-xs space-y-2 text-gray-800">
-                    <li class="flex justify-between"><span>English</span> <span class="text-gray-500">Advanced (B2)</span></li>
-                    <li class="flex justify-between"><span>French</span> <span class="text-gray-500">Basic (A2)</span></li>
-                    <li class="flex justify-between"><span>Ukrainian</span> <span class="text-gray-500">Native</span></li>
-                    <li class="flex justify-between"><span>Russian</span> <span class="text-gray-500">Fluent</span></li>
-                </ul>
-            </div>
-
-            <!-- Education (Moved to bottom) -->
-            <div class="mt-auto">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Education</h3>
-                <div class="text-xs">
-                    <p class="font-bold text-gray-900">Graphic Design</p>
-                    <p class="text-gray-700 mt-1">Cherkasy State Business College</p>
-                    <p class="text-[10px] text-gray-500 mt-1">Ukraine | 2003 - 2009</p>
-                </div>
-            </div>
-
+        <!-- HEADER -->
+        <div class="mb-2">
+            <h1 class="text-4xl font-bold text-gray-900 tracking-tight leading-none uppercase">
+                <div>Dmytro</div>
+                <div class="font-black">Ripa</div>
+            </h1>
+            <p class="text-[10px] text-gray-500 mt-4 font-bold uppercase tracking-widest leading-relaxed">
+                Senior Architectural<br>Visualizer / 3D Artist
+            </p>
         </div>
 
-        <!-- RIGHT COLUMN (Main Content) - Width approx 70% -->
-        <div class="flex-1 flex flex-col gap-8 pt-2">
-            
-            <!-- Profile -->
-            <div>
-                <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-300 pb-2 mb-3">Profile</h2>
-                <p class="text-xs leading-relaxed text-gray-700 text-justify">
-                    Senior Architectural Visualizer with 10+ years of experience in interior and architectural visualization for residential and commercial projects. Specialized in photorealistic imagery, lighting, materials, and production-ready visuals for clients and competitions. Strong experience working in professional studio environments and international teams. Reliable, detail-oriented, and focused on visual quality and deadlines.
-                </p>
-            </div>
-
-            <!-- Experience -->
-            <div>
-                <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-300 pb-2 mb-5">Professional Experience</h2>
-                
-                <div class="space-y-6">
-                    
-                    <!-- Job 1 -->
-                    <div>
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="text-sm font-bold text-gray-900">3D Artist - Architectural Visualization</h3>
-                            <span class="text-[10px] font-medium text-gray-500">Jan 2024 - Present</span>
-                        </div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">INUI • Paris, France</p>
-                        <ul class="list-disc list-outside ml-4 space-y-1 text-xs text-gray-700 leading-relaxed marker:text-gray-400">
-                            <li>Production of high-quality interior and architectural visualizations for residential projects.</li>
-                            <li>Responsibility for lighting, materials, camera setup, final rendering using 3ds Max and Corona Renderer and post-production.</li>
-                            <li>Collaboration with architects and design teams to translate concepts into clear visual narratives.</li>
-                            <li>Optimization of scenes for production efficiency and consistent visual quality.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Job 2 -->
-                    <div>
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="text-sm font-bold text-gray-900">3D Artist - Architectural Visualization</h3>
-                            <span class="text-[10px] font-medium text-gray-500">Oct 2022 - Dec 2023</span>
-                        </div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Willy Pulse • Lille, France</p>
-                        <ul class="list-disc list-outside ml-4 space-y-1 text-xs text-gray-700 leading-relaxed marker:text-gray-400">
-                            <li>Creation of photorealistic interior and exterior visualizations for architectural projects.</li>
-                            <li>Full production pipeline: modeling refinement, texturing, lighting, rendering, and post-production.</li>
-                            <li>Team-based workflow with clear task allocation and deadline-driven delivery.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Job 3 -->
-                    <div>
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="text-sm font-bold text-gray-900">Senior Interior Designer / Visualization Specialist</h3>
-                            <span class="text-[10px] font-medium text-gray-500">Oct 2018 - Jan 2022</span>
-                        </div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">RIPA • Ukraine</p>
-                        <ul class="list-disc list-outside ml-4 space-y-1 text-xs text-gray-700 leading-relaxed marker:text-gray-400">
-                            <li>Development of interior design concepts with strong emphasis on visualization and presentation quality.</li>
-                            <li>Production of detailed interior visualizations used for client approval and execution.</li>
-                            <li>Close collaboration with contractors and suppliers to ensure visual intent matched final results.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Job 4 -->
-                    <div>
-                        <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="text-sm font-bold text-gray-900">Senior Designer / Visualization Lead</h3>
-                            <span class="text-[10px] font-medium text-gray-500">Feb 2013 - Oct 2018</span>
-                        </div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Perspective Construction & Development Company • Ukraine</p>
-                        <ul class="list-disc list-outside ml-4 space-y-1 text-xs text-gray-700 leading-relaxed marker:text-gray-400">
-                            <li>Lead visual production for interior projects within a construction and development environment.</li>
-                            <li>Establishment of visualization standards and workflows for internal design teams.</li>
-                            <li>Supervision of visual output quality across multiple parallel projects.</li>
-                        </ul>
-                    </div>
-
+        <!-- Contact -->
+        <div>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Contact</h3>
+            <div class="text-xs space-y-3 font-medium text-gray-800">
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-gray-500">Location</span>
+                    <span>Paris, France</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-gray-500">Phone</span>
+                    <span>+33 7 58 16 83 57</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-gray-500">Email</span>
+                    <a href="mailto:ripa.dm@gmail.com">ripa.dm@gmail.com</a>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-gray-500">Portfolio</span>
+                    <a href="http://ripa.myportfolio.com" class="text-blue-700 break-words">ripa.myportfolio.com</a>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-gray-500">Website</span>
+                    <a href="https://ri-pa.com" class="text-blue-700 break-words">ri-pa.com</a>
                 </div>
             </div>
+        </div>
 
+        <!-- Status -->
+        <div>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Nationality & Status</h3>
+            <p class="text-xs font-medium text-gray-800">Ukrainian</p>
+            <p class="text-[10px] text-gray-500 mt-1">EU Temporary Protection (Work Authorized)</p>
+        </div>
+
+        <!-- Skills -->
+        <div>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Technical Skills</h3>
+            <div class="space-y-3">
+                <div>
+                    <p class="text-[10px] font-bold text-gray-500 mb-1">Primary Tools</p>
+                    <p class="text-xs text-gray-800 leading-relaxed">
+                        3ds Max, Corona Renderer, V-Ray, RailClone, Forest Pack, Adobe Photoshop, Adobe Lightroom
+                    </p>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-gray-500 mb-1">Additional</p>
+                    <p class="text-xs text-gray-800 leading-relaxed">
+                        Archicad, AutoCAD, Cinema 4D, Adobe Premiere Pro
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Languages -->
+        <div>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Languages</h3>
+            <ul class="text-xs space-y-2 text-gray-800">
+                <li class="flex justify-between"><span>English</span><span class="text-gray-500">Advanced (B2)</span></li>
+                <li class="flex justify-between"><span>French</span><span class="text-gray-500">Basic (A2)</span></li>
+                <li class="flex justify-between"><span>Ukrainian</span><span class="text-gray-500">Native</span></li>
+                <li class="flex justify-between"><span>Russian</span><span class="text-gray-500">Fluent</span></li>
+            </ul>
+        </div>
+
+        <!-- Education -->
+        <div class="mt-auto">
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Education</h3>
+            <div class="text-xs">
+                <p class="font-bold text-gray-900">Graphic Design</p>
+                <p class="text-gray-700 mt-1">Cherkasy State Business College</p>
+                <p class="text-[10px] text-gray-500 mt-1">Ukraine | 2003 – 2009</p>
+            </div>
         </div>
 
     </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="flex-1 flex flex-col gap-8 pt-2">
+
+        <!-- Profile -->
+        <div>
+            <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-300 pb-2 mb-3">
+                Profile
+            </h2>
+            <p class="text-xs leading-relaxed text-gray-700 text-justify">
+                Senior Architectural Visualizer with 10+ years of experience in interior and architectural visualization
+                for residential and commercial projects. Specialized in photorealistic imagery, lighting, materials, and
+                production-ready visuals for architectural studios and developers. Strong experience working in
+                professional studio environments and international teams. Reliable, detail-oriented, and focused on
+                visual quality and deadlines.
+            </p>
+        </div>
+
+        <!-- Experience -->
+        <div>
+            <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-300 pb-2 mb-5">
+                Professional Experience
+            </h2>
+
+            <div class="space-y-6">
+
+                <!-- INUI -->
+                <div>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-sm font-bold text-gray-900">3D Artist – Architectural Visualization</h3>
+                        <span class="text-[10px] font-medium text-gray-500">Jan 2024 – Present</span>
+                    </div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">INUI • Paris, France</p>
+                    <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
+                        <li>Production of interior and architectural visualizations and animated films for residential projects.</li>
+                        <li>Lighting, materials, camera setup, rendering (3ds Max + Corona) and post-production.</li>
+                        <li>Collaboration with architects and design teams on concept development.</li>
+                        <li>Scene optimization for production efficiency and consistent visual quality.</li>
+                    </ul>
+                </div>
+
+                <!-- Willy Pulse -->
+                <div>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-sm font-bold text-gray-900">3D Artist – Architectural Visualization</h3>
+                        <span class="text-[10px] font-medium text-gray-500">Oct 2022 – Dec 2023</span>
+                    </div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Willy Pulse • Lille, France</p>
+                    <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
+                        <li>Photorealistic interior and exterior visualizations for architectural projects.</li>
+                        <li>Full production pipeline: modeling, texturing, lighting, rendering and post-production.</li>
+                        <li>Team-based workflow with deadline-driven delivery.</li>
+                    </ul>
+                </div>
+
+                <!-- RIPA -->
+                <div>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-sm font-bold text-gray-900">Senior Interior Designer / Visualization Specialist</h3>
+                        <span class="text-[10px] font-medium text-gray-500">Oct 2018 – Jan 2022</span>
+                    </div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">RIPA • Ukraine</p>
+                    <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
+                        <li>Interior design development with strong focus on visualization and presentation quality.</li>
+                        <li>Production of detailed interior visuals for client approval and execution.</li>
+                        <li>Coordination with contractors to ensure visual intent matched final results.</li>
+                    </ul>
+                </div>
+
+                <!-- Construction Company -->
+                <div>
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h3 class="text-sm font-bold text-gray-900">Senior Designer / Visualization Lead</h3>
+                        <span class="text-[10px] font-medium text-gray-500">Feb 2013 – Oct 2018</span>
+                    </div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">
+                        Perspective Construction & Development Company • Ukraine
+                    </p>
+                    <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
+                        <li>Lead visual production for interior projects within a development environment.</li>
+                        <li>Development of visualization standards and internal workflows.</li>
+                        <li>Quality control across multiple parallel projects.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>
