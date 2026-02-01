@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dmytro Ripa - Designer d’intérieur</title>
+    <title>Dmytro Ripa - Designer d'intérieur</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,19 +13,17 @@
             background-color: #f3f4f6;
             color: #1a1a1a;
         }
-
         .a4-page {
             width: 210mm;
             min-height: 297mm;
             background: white;
             margin: 40px auto;
             padding: 40px 50px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),
-                        0 2px 4px -1px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
             display: flex;
             gap: 40px;
         }
-
         @media print {
             body {
                 background: white;
@@ -46,15 +44,12 @@
 </head>
 <body>
 
-<!-- Toolbar -->
 <div class="no-print fixed top-5 right-5 z-50">
-    <button onclick="window.print()"
-        class="bg-gray-900 text-white px-6 py-2 rounded-md shadow hover:bg-gray-700 transition font-medium text-sm flex items-center gap-2">
+    <button onclick="window.print()" class="bg-gray-900 text-white px-6 py-2 rounded-md shadow hover:bg-gray-700 transition font-medium text-sm flex items-center gap-2">
         <i class="fas fa-print"></i> Save as PDF
     </button>
 </div>
 
-<!-- Resume Content -->
 <div class="a4-page" contenteditable="true" spellcheck="false">
 
     <!-- LEFT COLUMN -->
@@ -67,7 +62,7 @@
                 <div class="font-black">Ripa</div>
             </h1>
             <p class="text-[10px] text-gray-500 mt-4 font-bold uppercase tracking-widest leading-relaxed">
-                Designer d’intérieur<br>Conception & Coordination
+                Designer d'intérieur<br>Conception & Coordination
             </p>
         </div>
 
@@ -98,48 +93,36 @@
             </div>
         </div>
 
-        <!-- Status -->
-        <div>
-            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Nationality & Status</h3>
-            <p class="text-xs font-medium text-gray-800">Ukrainian</p>
-            <p class="text-[10px] text-gray-500 mt-1">EU Temporary Protection (Work Authorized)</p>
-        </div>
-
         <!-- Skills -->
         <div>
-            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Technical Skills</h3>
-            <div class="space-y-3">
-                <div>
-                    <p class="text-[10px] font-bold text-gray-500 mb-1">Primary Tools</p>
-                    <p class="text-xs text-gray-800 leading-relaxed">
-                        3ds Max, Corona Renderer, V-Ray, RailClone, Forest Pack, Adobe Photoshop, Adobe Lightroom
-                    </p>
-                </div>
-                <div>
-                    <p class="text-[10px] font-bold text-gray-500 mb-1">Additional</p>
-                    <p class="text-xs text-gray-800 leading-relaxed">
-                        Archicad, AutoCAD, Cinema 4D, Adobe Premiere Pro
-                    </p>
-                </div>
-            </div>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Compétences clés</h3>
+            <ul class="text-xs space-y-2 text-gray-800">
+                <li>Conception d’espaces intérieurs (résidentiel & commercial)</li>
+                <li>Planification, zoning, circulation et ergonomie</li>
+                <li>Choix des matériaux, finitions et FF&E (mobilier, luminaires, équipements)</li>
+                <li>Lecture et compréhension de plans techniques</li>
+                <li>Coordination entre design, visualisation et exécution chantier</li>
+                <li>Suivi de budgets et contraintes techniques</li>
+                <li>Sens du détail et qualité haut de gamme</li>
+            </ul>
         </div>
 
         <!-- Languages -->
         <div>
-            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Languages</h3>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Langues</h3>
             <ul class="text-xs space-y-2 text-gray-800">
-                <li class="flex justify-between"><span>English</span><span class="text-gray-500">Advanced (B2)</span></li>
-                <li class="flex justify-between"><span>French</span><span class="text-gray-500">Basic (A2)</span></li>
-                <li class="flex justify-between"><span>Ukrainian</span><span class="text-gray-500">Native</span></li>
-                <li class="flex justify-between"><span>Russian</span><span class="text-gray-500">Fluent</span></li>
+                <li class="flex justify-between"><span>Anglais</span><span class="text-gray-500">Professionnel (B2)</span></li>
+                <li class="flex justify-between"><span>Français</span><span class="text-gray-500">Débutant (A1, en cours)</span></li>
+                <li class="flex justify-between"><span>Ukrainien</span><span class="text-gray-500">Langue maternelle</span></li>
+                <li class="flex justify-between"><span>Russe</span><span class="text-gray-500">Courant</span></li>
             </ul>
         </div>
 
         <!-- Education -->
         <div class="mt-auto">
-            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Education</h3>
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Formation</h3>
             <div class="text-xs">
-                <p class="font-bold text-gray-900">Graphic Design</p>
+                <p class="font-bold text-gray-900">Design graphique</p>
                 <p class="text-gray-700 mt-1">Cherkasy State Business College</p>
                 <p class="text-[10px] text-gray-500 mt-1">Ukraine | 2003 – 2009</p>
             </div>
@@ -153,20 +136,18 @@
         <!-- Profile -->
         <div>
             <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-300 pb-2 mb-3">
-                Profile
+                Profil
             </h2>
             <p class="text-xs leading-relaxed text-gray-700 text-justify">
-                Designer d’intérieur avec plus de 10 ans d’expérience dans des projets résidentiels et commerciaux, combinant conception, coordination et visualisation.  
-                Expérience internationale et studio, habitué à travailler avec architectes, artisans et équipes techniques.  
-                Approche pragmatique : compréhension des contraintes techniques, budgétaires et de réalisation jusqu’au produit final.  
-                Français en cours d’apprentissage (A1), expérience professionnelle en anglais dans des contextes internationaux.
+                Designer d’intérieur avec plus de 10 ans d’expérience dans la conception et la visualisation de projets résidentiels et commerciaux. Parcours combinant design, visualisation et coordination de projets. Solide compréhension de l’ensemble du processus : concept, budget, coordination d’équipes, suivi de chantier et exécution. 
+                Actuellement basé à Paris, apprentissage actif du français (niveau A1).
             </p>
         </div>
 
         <!-- Experience -->
         <div>
             <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900 border-b border-gray-300 pb-2 mb-5">
-                Professional Experience
+                Expérience professionnelle
             </h2>
 
             <div class="space-y-6">
@@ -174,16 +155,17 @@
                 <!-- RIPA -->
                 <div>
                     <div class="flex justify-between items-baseline mb-1">
-                        <h3 class="text-sm font-bold text-gray-900">Designer d’intérieur / Responsable conception & visualisation</h3>
+                        <h3 class="text-sm font-bold text-gray-900">Designer d’intérieur senior / Responsable conception & visualisation</h3>
                         <span class="text-[10px] font-medium text-gray-500">Oct 2018 – Jan 2022</span>
                     </div>
                     <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">RIPA Studio • Ukraine</p>
                     <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
-                        <li>Conception de projets résidentiels et commerciaux, élaboration de concepts et ambiances.</li>
-                        <li>Sélection et spécification du mobilier, luminaires et éléments FF&E, en lien avec contraintes budgétaires et techniques.</li>
+                        <li>Conception d’aménagement intérieur résidentiel et commercial.</li>
+                        <li>Élaboration de concepts, ambiances, zoning, choix de matériaux, finitions et FF&E (mobilier, luminaires, équipements).</li>
                         <li>Production de visuels 3D pour validation client et exécution.</li>
-                        <li>Coordination avec artisans, fournisseurs et équipes chantier pour garantir la cohérence entre conception et réalisation.</li>
-                        <li>Organisation du studio et planification des projets.</li>
+                        <li>Coordination avec entreprises, artisans et fournisseurs.</li>
+                        <li>Suivi de la cohérence entre le projet conçu et la réalisation finale.</li>
+                        <li>Gestion du studio : organisation du travail, planification, relation partenaires.</li>
                     </ul>
                 </div>
 
@@ -193,41 +175,40 @@
                         <h3 class="text-sm font-bold text-gray-900">Senior Designer / Responsable visualisation</h3>
                         <span class="text-[10px] font-medium text-gray-500">Feb 2013 – Oct 2018</span>
                     </div>
-                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Perspective Construction & Development Company • Ukraine</p>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Société de construction & développement • Ukraine</p>
                     <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
-                        <li>Conception d’intérieurs résidentiels dans un contexte de promotion immobilière.</li>
-                        <li>Gestion du FF&E et choix des matériaux et finitions.</li>
-                        <li>Coordination entre design, visualisation et exécution.</li>
-                        <li>Supervision de plusieurs projets en parallèle et développement de standards internes.</li>
+                        <li>Conception d’intérieurs dans un contexte de promotion immobilière.</li>
+                        <li>Coordination entre design, contraintes techniques et suivi chantier.</li>
+                        <li>Développement de standards visuels et méthodologiques pour l’équipe.</li>
+                        <li>Supervision de plusieurs projets en parallèle.</li>
                     </ul>
                 </div>
 
                 <!-- INUI -->
                 <div>
                     <div class="flex justify-between items-baseline mb-1">
-                        <h3 class="text-sm font-bold text-gray-900">3D Artist – Architectural Visualization</h3>
-                        <span class="text-[10px] font-medium text-gray-500">Jan 2024 – Present</span>
+                        <h3 class="text-sm font-bold text-gray-900">Designer d’intérieur / Artiste 3D</h3>
+                        <span class="text-[10px] font-medium text-gray-500">Jan 2024 – présent</span>
                     </div>
                     <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">INUI • Paris, France</p>
                     <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
-                        <li>Production de visualisations intérieures et architecturales et films d’animation pour projets résidentiels.</li>
-                        <li>Gestion des lumières, matériaux, caméras, rendu (3ds Max + Corona) et post-production.</li>
-                        <li>Collaboration avec architectes et designers sur le développement conceptuel.</li>
-                        <li>Optimisation des scènes pour efficacité de production et qualité constante.</li>
+                        <li>Production de visualisations intérieures et architecturales et films d’animation.</li>
+                        <li>Collaboration avec architectes et designers sur volumes, matériaux et ambiances.</li>
+                        <li>Optimisation des scènes pour qualité et efficacité.</li>
                     </ul>
                 </div>
 
                 <!-- Willy Pulse -->
                 <div>
                     <div class="flex justify-between items-baseline mb-1">
-                        <h3 class="text-sm font-bold text-gray-900">3D Artist – Architectural Visualization</h3>
+                        <h3 class="text-sm font-bold text-gray-900">3D Artist — Visualisation architecturale</h3>
                         <span class="text-[10px] font-medium text-gray-500">Oct 2022 – Dec 2023</span>
                     </div>
                     <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Willy Pulse • Lille, France</p>
                     <ul class="list-disc ml-4 space-y-1 text-xs text-gray-700 marker:text-gray-400">
-                        <li>Visualisations photoréalistes intérieures et extérieures.</li>
-                        <li>Pipeline complet : modélisation, texturing, éclairage, rendu et post-production.</li>
-                        <li>Travail en équipe avec respect strict des délais et organisation.</li>
+                        <li>Production d’images photoréalistes pour projets intérieurs et extérieurs.</li>
+                        <li>Travail en équipe sur des projets architecturaux complexes.</li>
+                        <li>Respect strict des délais et du pipeline de production.</li>
                     </ul>
                 </div>
 
