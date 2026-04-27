@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор: Оренда vs Купівля для Себе</title>
+    
+    <!-- Підключення Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Підключення React та ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel для обробки JSX прямо в браузері -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body { background-color: #f3f4f6; padding: 20px; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        // --- ТЕКСТИ ПЕРЕКЛАДУ (СЛОВНИК) ---
+        const t = {
+            title: "Аналіз: Оренда чи Купівля для Себе?",
+            subtitle: "Симуляція накопичення капіталу (Нерухомість + Акції)",
+            projectCost: "Параметри Квартири",
+            priceLabel: "Ціна квартири (€)",
+            worksLabel: "Ремонт/Меблі (€)",
+            notaryLabel: "Нотаріус (8%)",
+            totalCostLabel: "Повна вартість:",
+            financing: "Фінансування",
+            contributionLabel: "Ваш внесок (Apport) (€)",
+            rateLabel: "Ставка банку %",
+            yearsLabel: "Термін (Років)",
+            insuranceLabel: "Страховка %",
+            monthlyPaymentLabel: "Кредитний платіж:",
+            operations: "Витрати Власника (міс/рік)",
+            chargesLabel: "Комунальні платежі (міс)",
+            taxLabel: "Taxe Foncière (рік)",
+            currentSituation: "Ваша поточна ситуація",
+            currentRentLabel: "Поточна оренда (€/міс)",
+            investBudgetLabel: "Інвестиції в акції (€/міс)",
+            techRateLabel: "Дохідність вашого портфелю (%)",
+            sp500RateLabel: "Дохідність S&P 500 (%)",
+            totalBudgetLabel: "Ваш щомісячний бюджет:",
+            monthlyBreakdownTitle: "Щомісячні витрати на власне житло",
+            housingCost: "Кредит + Страховка",
+            taxesCost: "Комуналка + Податки",
+            totalOwningCost: "Разом за проживання:",
+            budgetComparison: "Розподіл вашого бюджету",
+            availableForInvest: "Залишок на інвестиції",
+            deficit: "Не вистачає бюджету!",
+            battleTitle: "Вартість Ваших Активів через",
+            battleSubtitle: "Порівняння 4-х життєвих стратегій",
+            strategy1: "Оренда + S&P 500",
+            strategy1Desc: "Інвестиції в індекс",
+            strategy2: "Оренда + Ваш Портфель",
+            strategy2Desc: "Агресивні інвестиції",
+            strategy3: "Тільки Купівля житла",
+            strategy3Desc: "Без вкладень в акції",
+            strategy4: "Купівля + Ваш Портфель",
+            strategy4Desc: "Інвестуєте всю економію",
+            assetHouse: "Квартира",
+            assetStock: "Акції",
+            totalCapital: "Загальний Капітал:",
+            monthlyInvest: "Інвестиція щомісяця",
+            years: "років"
+        };
+
+        // --- ІКОНКИ ---
+        const IconWrapper = ({ children, color = "currentColor", size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const Home = (props) => <IconWrapper {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></IconWrapper>;
+        const Calculator = (props) => <IconWrapper {...props}><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></IconWrapper>;
+        const Euro = (props) => <IconWrapper {...props}><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/></IconWrapper>;
+        const TrendingUp = (props) => <IconWrapper {...props}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></IconWrapper>;
+        const LineChart = (props) => <IconWrapper {...props}><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></IconWrapper>;
+        const Wallet = (props) => <IconWrapper {...props}><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></IconWrapper>;
+
+        // --- ГОЛОВНИЙ КОМПОНЕНТ ---
+        const RealEstateCalculator = () => {
+
+            // 1. Об'єкт
+            const [price, setPrice] = useState(250000); // Збільшив дефолт, бо беремо "для себе" (наприклад 30-40 кв.м)
+            const [works, setWorks] = useState(15000); 
+            
+            // 2. Фінансування
+            const [contribution, setContribution] = useState(35000); 
+            const [rate, setRate] = useState(3.7); 
+            const [duration, setDuration] = useState(20); 
+            const [insuranceRate, setInsuranceRate] = useState(0.35); 
+
+            // 3. Витрати власника
+            const [chargesCopro, setChargesCopro] = useState(120); 
+            const [taxeFonciere, setTaxeFonciere] = useState(800); 
+
+            // 4. Поточна ситуація (Бюджет)
+            const [currentRent, setCurrentRent] = useState(1250);
+            const [investmentBudget, setInvestmentBudget] = useState(400); 
+            const [techRate, setTechRate] = useState(12); // Портфель акцій
+            const [sp500Rate, setSp500Rate] = useState(8); // Дохідність S&P 500
+
+            // --- БАЗОВІ РОЗРАХУНКИ ---
+            const notaryFees = price * 0.08; 
+            const totalProjectCost = price + works + notaryFees;
+            const loanAmount = totalProjectCost - contribution;
+
+            // Кредит
+            const monthlyRate = rate / 100 / 12;
+            const numberOfPayments = duration * 12;
+            const monthlyMortgage = loanAmount > 0 
+                ? (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1) 
+                : 0;
+            const monthlyInsurance = (loanAmount * (insuranceRate / 100)) / 12;
+            const totalMonthlyLoan = monthlyMortgage + monthlyInsurance;
+
+            // Витрати щомісячні (на проживання)
+            const monthlyTaxeFonciere = taxeFonciere / 12;
+            const monthlyTaxesAndCopro = chargesCopro + monthlyTaxeFonciere;
+            const monthlyOwningCost = totalMonthlyLoan + monthlyTaxesAndCopro;
+
+            // Загальний бюджет користувача
+            const totalMonthlyUserBudget = currentRent + investmentBudget;
+
+            // Скільки лишається на інвестиції, якщо купити квартиру
+            const surplusForInvestRP = totalMonthlyUserBudget - monthlyOwningCost;
+            const actualMonthlyInvestRP = Math.max(0, surplusForInvestRP);
+
+            // --- SIMULATION (20 YEARS) ---
+            const simulation = useMemo(() => {
+                // 1. Rent + Invest SP500
+                let rentAndInvest_SP500 = contribution;
+                // 2. Rent + Invest Tech
+                let rentAndInvest_Tech = contribution;
+                
+                // 3. Buy Base
+                // 4. Buy PRO
+                let buyPro_Stock = 0; 
+                let buyPro_CashInvested = 0;
+
+                for (let year = 0; year < duration; year++) {
+                    rentAndInvest_SP500 = rentAndInvest_SP500 * (1 + sp500Rate/100) + (investmentBudget * 12);
+                    rentAndInvest_Tech = rentAndInvest_Tech * (1 + techRate/100) + (investmentBudget * 12);
+
+                    if (actualMonthlyInvestRP > 0) {
+                        buyPro_Stock = buyPro_Stock * (1 + techRate/100) + (actualMonthlyInvestRP * 12);
+                        buyPro_CashInvested += (actualMonthlyInvestRP * 12);
+                    } else {
+                        buyPro_Stock = buyPro_Stock * (1 + techRate/100);
+                    }
+                }
+
+                // Вартість нерухомості через Х років (+2% в рік)
+                const finalPropertyPrice = price * Math.pow(1.02, duration);
+
+                return {
+                    rentAndInvest_SP500: rentAndInvest_SP500,
+                    rentAndInvest_Tech: rentAndInvest_Tech,
+                    
+                    buyBase_House: finalPropertyPrice,
+                    buyBase_Total: finalPropertyPrice,
+                    
+                    buyPro_House: finalPropertyPrice,
+                    buyPro_Stock: buyPro_Stock,
+                    buyPro_Total: finalPropertyPrice + buyPro_Stock,
+                    buyPro_CashInvested: buyPro_CashInvested
+                };
+
+            }, [price, duration, contribution, investmentBudget, techRate, sp500Rate, actualMonthlyInvestRP]);
+
+            const maxValue = Math.max(
+                simulation.rentAndInvest_SP500,
+                simulation.rentAndInvest_Tech, 
+                simulation.buyBase_Total, 
+                simulation.buyPro_Total
+            );
+
+            return (
+                <div className="max-w-4xl mx-auto p-4 bg-gray-50 rounded-xl font-sans text-gray-800 shadow-xl">
+                    {/* HEADER */}
+                    <div className="flex items-center justify-between mb-6 border-b pb-4 border-gray-200">
+                        <div className="flex items-center gap-3">
+                            <Home className="text-indigo-600 w-8 h-8" />
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900">{t.title}</h1>
+                                <p className="text-sm text-gray-500">{t.subtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* INPUTS GRID */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        
+                        {/* COLUMN 1: PROPERTY & LOAN */}
+                        <div className="space-y-6">
+                            {/* Property */}
+                            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+                                <h3 className="text-md font-semibold text-indigo-800 mb-4 flex items-center gap-2"><Calculator size={18}/> {t.projectCost}</h3>
+                                <div className="space-y-3">
+                                    <div><label className="text-xs font-medium text-gray-500 uppercase">{t.priceLabel}</label><input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none transition"/></div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div><label className="text-xs font-medium text-gray-500 uppercase">{t.worksLabel}</label><input type="number" value={works} onChange={(e) => setWorks(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/></div>
+                                        <div><label className="text-xs font-medium text-gray-500 uppercase">{t.notaryLabel}</label><div className="w-full mt-1 p-2 bg-gray-100 rounded-md text-gray-600">{notaryFees.toLocaleString()} €</div></div>
+                                    </div>
+                                    <div className="pt-2 border-t flex justify-between items-center"><span className="font-semibold text-sm">{t.totalCostLabel}</span><span className="font-bold text-lg text-indigo-900">{totalProjectCost.toLocaleString()} €</span></div>
+                                </div>
+                            </div>
+
+                            {/* Loan */}
+                            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+                                <h3 className="text-md font-semibold text-indigo-800 mb-4 flex items-center gap-2"><Euro size={18}/> {t.financing}</h3>
+                                <div className="space-y-3">
+                                    <div><label className="text-xs font-medium text-gray-500 uppercase">{t.contributionLabel}</label><input type="number" value={contribution} onChange={(e) => setContribution(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none"/></div>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div className="col-span-1"><label className="text-xs font-medium text-gray-500 uppercase">{t.rateLabel}</label><input type="number" step="0.01" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/></div>
+                                        <div className="col-span-1"><label className="text-xs font-medium text-gray-500 uppercase">{t.yearsLabel}</label><input type="number" value={duration} onChange={(e) => setDuration(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/></div>
+                                        <div className="col-span-1"><label className="text-xs font-medium text-gray-500 uppercase">{t.insuranceLabel}</label><input type="number" step="0.01" value={insuranceRate} onChange={(e) => setInsuranceRate(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* COLUMN 2: CURRENT SITUATION & OWNING COSTS */}
+                        <div className="space-y-6">
+                            
+                            {/* Current Budget */}
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm border border-indigo-100">
+                                <h3 className="text-md font-semibold text-indigo-800 mb-4 flex items-center gap-2"><Wallet size={18}/> {t.currentSituation}</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div><label className="text-xs font-medium text-indigo-600 uppercase">{t.currentRentLabel}</label><input type="number" value={currentRent} onChange={(e) => setCurrentRent(Number(e.target.value))} className="w-full mt-1 p-2 border border-indigo-200 rounded-md font-semibold"/></div>
+                                    <div><label className="text-xs font-medium text-purple-600 uppercase">{t.investBudgetLabel}</label><input type="number" value={investmentBudget} onChange={(e) => setInvestmentBudget(Number(e.target.value))} className="w-full mt-1 p-2 border border-purple-200 rounded-md font-semibold"/></div>
+                                    <div><label className="text-xs font-medium text-slate-500 uppercase">{t.techRateLabel}</label><input type="number" value={techRate} onChange={(e) => setTechRate(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/></div>
+                                    <div><label className="text-xs font-medium text-slate-500 uppercase">{t.sp500RateLabel}</label><input type="number" value={sp500Rate} onChange={(e) => setSp500Rate(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md"/></div>
+                                </div>
+                                <div className="mt-4 pt-3 border-t border-indigo-100 flex justify-between items-center bg-white p-2 rounded shadow-sm">
+                                    <span className="font-semibold text-sm text-indigo-900">{t.totalBudgetLabel}</span>
+                                    <span className="font-bold text-xl text-indigo-700">{totalMonthlyUserBudget.toLocaleString()} €</span>
+                                </div>
+                            </div>
+
+                            {/* Owning Costs Breakdown */}
+                            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+                                <h3 className="text-md font-semibold text-slate-800 mb-4 flex items-center gap-2"><Home size={18}/> {t.monthlyBreakdownTitle}</h3>
+                                
+                                <div className="space-y-3 mb-4">
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-600 pl-2 border-l-2 border-blue-500">{t.housingCost}</span>
+                                        <span className="text-slate-800 font-medium">{totalMonthlyLoan.toFixed(0)} €</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-600 pl-2 border-l-2 border-orange-400">{t.taxesCost}</span>
+                                        <span className="text-slate-800 font-medium">{monthlyTaxesAndCopro.toFixed(0)} €</span>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <input type="number" value={chargesCopro} onChange={(e) => setChargesCopro(Number(e.target.value))} className="w-1/2 p-1 text-xs border rounded" title={t.chargesLabel} placeholder="Charges"/>
+                                        <input type="number" value={taxeFonciere} onChange={(e) => setTaxeFonciere(Number(e.target.value))} className="w-1/2 p-1 text-xs border rounded" title={t.taxLabel} placeholder="Taxe Foncière (рік)"/>
+                                    </div>
+                                </div>
+
+                                <div className="p-3 bg-slate-100 rounded-md flex justify-between items-center border border-slate-200">
+                                    <span className="text-sm text-slate-800 font-medium">{t.totalOwningCost}</span>
+                                    <span className="font-bold text-slate-900 text-xl">{monthlyOwningCost.toFixed(0)} €/міс</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* BUDGET COMPARISON WIDGET */}
+                    <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-8">
+                         <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+                            Розподіл вашого бюджету ({totalMonthlyUserBudget} €) при купівлі квартири
+                         </h3>
+                         
+                         <div className="flex w-full h-12 rounded-full overflow-hidden shadow-inner mb-2">
+                             <div className="bg-blue-600 flex items-center justify-center text-white font-bold text-sm transition-all duration-500" 
+                                  style={{width: `${Math.min(100, (monthlyOwningCost/totalMonthlyUserBudget)*100)}%`}}>
+                                 {t.totalOwningCost} {monthlyOwningCost.toFixed(0)}€
+                             </div>
+                             {surplusForInvestRP > 0 ? (
+                                 <div className="bg-purple-500 flex items-center justify-center text-white font-bold text-sm transition-all duration-500" 
+                                      style={{width: `${(surplusForInvestRP/totalMonthlyUserBudget)*100}%`}}>
+                                     {t.assetStock} {surplusForInvestRP.toFixed(0)}€
+                                 </div>
+                             ) : (
+                                 <div className="bg-red-500 flex items-center justify-center text-white font-bold text-sm flex-1">
+                                     {t.deficit} ({Math.abs(surplusForInvestRP).toFixed(0)}€)
+                                 </div>
+                             )}
+                         </div>
+                         <p className="text-center text-sm text-gray-500">
+                             Якщо ви купите цю квартиру, після сплати кредиту та комуналки у вас залишиться 
+                             <strong className={surplusForInvestRP > 0 ? "text-purple-600 ml-1" : "text-red-600 ml-1"}>
+                                {surplusForInvestRP.toFixed(0)} €
+                             </strong> на інвестиції щомісяця.
+                         </p>
+                    </div>
+
+
+                    {/* BATTLE OF STRATEGIES */}
+                    <div className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-xl shadow-2xl border border-indigo-800 overflow-hidden">
+                        <div className="p-6 border-b border-indigo-800 text-center">
+                            <h2 className="text-white text-2xl font-bold flex items-center justify-center gap-2">
+                                <TrendingUp className="text-green-400" />
+                                {t.battleTitle} {duration} {t.years}
+                            </h2>
+                            <p className="text-indigo-200 mt-1">{t.battleSubtitle}</p>
+                        </div>
+                        
+                        <div className="p-8">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end h-80">
+                                
+                                {/* 1. RENT + INVEST SP500 */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-3">
+                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.strategy1}</span>
+                                        <span className="text-white text-xl lg:text-2xl font-bold">{simulation.rentAndInvest_SP500.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                    </div>
+                                    <div className="w-full flex flex-col items-center justify-end h-56 relative">
+                                        <div className="w-full bg-yellow-500 rounded-t-lg relative transition-all duration-500 flex flex-col justify-center items-center group-hover:bg-yellow-400" 
+                                             style={{height: `${(simulation.rentAndInvest_SP500 / maxValue) * 100}%`}}>
+                                             <span className="text-white text-xs font-bold absolute bottom-2">{t.assetStock}</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 text-center text-xs text-indigo-300 bg-indigo-900/50 p-2 rounded">
+                                        {t.monthlyInvest}:<br/><strong>{investmentBudget}€</strong>
+                                    </div>
+                                </div>
+
+                                {/* 2. RENT + INVEST TECH */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-3">
+                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.strategy2}</span>
+                                        <span className="text-white text-xl lg:text-2xl font-bold">{simulation.rentAndInvest_Tech.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                    </div>
+                                    <div className="w-full flex flex-col items-center justify-end h-56 relative">
+                                        <div className="w-full bg-pink-500 rounded-t-lg relative transition-all duration-500 flex flex-col justify-center items-center group-hover:bg-pink-400" 
+                                             style={{height: `${(simulation.rentAndInvest_Tech / maxValue) * 100}%`}}>
+                                             <span className="text-white text-xs font-bold absolute bottom-2">{t.assetStock}</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 text-center text-xs text-indigo-300 bg-indigo-900/50 p-2 rounded">
+                                        {t.monthlyInvest}:<br/><strong>{investmentBudget}€</strong>
+                                    </div>
+                                </div>
+
+                                {/* 3. BUY BASE */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-3">
+                                        <span className="text-indigo-200 text-sm font-semibold uppercase tracking-wider block mb-1">{t.strategy3}</span>
+                                        <span className="text-white text-xl lg:text-2xl font-bold">{simulation.buyBase_Total.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                    </div>
+                                    <div className="w-full flex flex-col items-center justify-end h-56 relative">
+                                        <div className="w-full bg-blue-500 rounded-t-lg relative transition-all duration-500 flex flex-col justify-center items-center group-hover:bg-blue-400" 
+                                             style={{height: `${(simulation.buyBase_Total / maxValue) * 100}%`}}>
+                                             <span className="text-white text-xs font-bold absolute bottom-2">{t.assetHouse}</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 text-center text-xs text-indigo-300 bg-indigo-900/50 p-2 rounded">
+                                        {t.monthlyInvest}:<br/><strong>0€</strong>
+                                    </div>
+                                </div>
+
+                                {/* 4. BUY PRO */}
+                                <div className="flex flex-col justify-end h-full group">
+                                    <div className="text-center mb-3">
+                                        <span className="text-green-400 text-sm font-semibold uppercase tracking-wider block mb-1">{t.strategy4}</span>
+                                        <span className="text-green-400 text-xl lg:text-2xl font-bold">{simulation.buyPro_Total.toLocaleString(undefined, {maximumFractionDigits: 0})} €</span>
+                                    </div>
+                                    <div className="w-full flex flex-col items-center justify-end h-56 relative">
+                                        <div className="w-full bg-purple-500 rounded-t-lg relative transition-all duration-500 border-b border-indigo-900 flex justify-center items-center" 
+                                             style={{height: `${(simulation.buyPro_Stock / maxValue) * 100}%`}}>
+                                             <span className="text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">{simulation.buyPro_Stock.toLocaleString(undefined, {maximumFractionDigits: 0})}€</span>
+                                        </div>
+                                        <div className="w-full bg-blue-500 relative transition-all duration-500 flex flex-col justify-end items-center pb-2" 
+                                             style={{height: `${(simulation.buyPro_House / maxValue) * 100}%`}}>
+                                             <span className="text-white text-xs font-bold">{t.assetHouse}</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 text-center text-xs text-green-200 bg-green-900/30 p-2 rounded border border-green-800/50">
+                                        {t.monthlyInvest}:<br/><strong>{actualMonthlyInvestRP.toFixed(0)}€</strong>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<RealEstateCalculator />);
+    </script>
+</body>
+</html>
